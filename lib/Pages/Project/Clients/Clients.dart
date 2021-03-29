@@ -27,24 +27,26 @@ class _BrokerClientsState extends State<BrokerClients> {
   bool isSearchByName = false;
   String customerName;
   List<Map<String,dynamic>> searchList =[];
+  List<Map<String,dynamic>> dataOfClient =[];
+  bool cancelCustomer = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final fontSize = size.height*0.015;
     final spaceVertical = size.height*0.01;
     final projectRetrieve = Provider.of<ProjectRetrieve>(context);
-    searchFind(BrokerModel snapshot){
+    searchFind( List<Map<String,dynamic>> dataList){
       print(isSearch);
       searchList = [];
-      for(int i=0;i<snapshot.clients.length;i++){
+      for(int i=0;i<dataList.length;i++){
         if(isSearchByName ){
-          if(snapshot.clients[i].containsValue(customerName)){
-            searchList.add(snapshot.clients[i]);
+          if(dataList[i].containsValue(customerName)){
+            searchList.add(dataList[i]);
           }
         }
         else{
-          if(snapshot.clients[i].containsValue(number)){
-            searchList.add(snapshot.clients[i]);
+          if(dataList[i].containsValue(number)){
+            searchList.add(dataList[i]);
           }
         }
 
@@ -52,11 +54,12 @@ class _BrokerClientsState extends State<BrokerClients> {
     }
 
     return Scaffold(
-      appBar: commonappBar(Container()),
+      appBar: commonAppbar(Container()),
       body: StreamBuilder<BrokerModel>(
           stream: projectRetrieve.SINGLEBROKERDATA,
           builder:(context,snapshot){
             if(snapshot.hasData){
+              !cancelCustomer ?dataOfClient =snapshot.data.clients:dataOfClient= snapshot.data.closedBooking;
               return Column(
                 children: [
                   Padding(
@@ -76,7 +79,7 @@ class _BrokerClientsState extends State<BrokerClients> {
                           IconButton(icon: Icon(Icons.search), onPressed: (){
                             setState(() {
                               isSearch = true;
-                              searchFind(snapshot.data);
+                              searchFind(dataOfClient);
                             });
                           })
                       ),
@@ -96,12 +99,32 @@ class _BrokerClientsState extends State<BrokerClients> {
                           IconButton(icon: Icon(Icons.search), onPressed: (){
                             setState(() {
                               isSearch = true;
-                              searchFind(snapshot.data);
+                              searchFind(dataOfClient);
                             });
                           })
                       ),
 
                     ),
+                  ),
+                  SizedBox(height: spaceVertical,),
+                  SizedBox(height: spaceVertical,),
+                  Row(
+                    children: [
+                      Checkbox(value: cancelCustomer, onChanged: (val){
+                        setState(() {
+                          cancelCustomer = val;
+                         // allocate();
+
+                        });
+                      }),
+                      Text(
+
+                        AppLocalizations.of(context).translate('CancelBooking'),
+                        style: TextStyle(
+                          fontSize: fontSize,
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(height: spaceVertical,),
                   Row(
@@ -138,13 +161,13 @@ class _BrokerClientsState extends State<BrokerClients> {
                               ),
                             );
                           }):ListView.builder(
-                          itemCount: snapshot.data.clients.length,
+                          itemCount: dataOfClient.length,
                           itemBuilder: (context,index){
                             return Card(
                               child: ListTile(
                                 onTap: ()async{
-                                  await projectRetrieve.setProjectName(snapshot.data.clients[index]['ProjectName']);
-                                  await projectRetrieve.setLoanRef(snapshot.data.clients[index]['LoanRef']);
+                                  await projectRetrieve.setProjectName(dataOfClient[index]['ProjectName']);
+                                  await projectRetrieve.setLoanRef(dataOfClient[index]['LoanRef']);
                                   return    Navigator.push(
                                     context,
                                     PageRouteBuilder(
@@ -153,12 +176,12 @@ class _BrokerClientsState extends State<BrokerClients> {
                                     ),
                                   );
                                 },
-                                title: Text("${snapshot.data.clients[index]['CustomerName']} (${snapshot.data.clients[index]['PhoneNumber']})"),
+                                title: Text("${dataOfClient[index]['CustomerName']} (${dataOfClient[index]['PhoneNumber']})"),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(snapshot.data.clients[index]['ProjectName']),
-                                    Text(snapshot.data.clients[index]['LoanRef'])
+                                    Text(dataOfClient[index]['ProjectName']),
+                                    Text(dataOfClient[index]['LoanRef'])
                                   ],
                                 ),
                               ),

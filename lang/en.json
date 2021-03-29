@@ -165,5 +165,6 @@
   "Ads": "Ads",
   "IDIsExist": "ID Is Exist",
   "MostVisitedSite": "Most Visited Site",
-  "Thisuserhasnopermissiontologin": "This user has no permission to log in"
+  "Thisuserhasnopermissiontologin": "This user has no permission to log in",
+  "CancelBooking": "Cancel Booking"
 }

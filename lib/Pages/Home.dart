@@ -6,6 +6,7 @@ import 'package:gpgroup/Commonassets/CommonLoading.dart';
 import 'package:gpgroup/Commonassets/Commonassets.dart';
 import 'package:gpgroup/Commonassets/Widgets/AppDrawer.dart';
 import 'package:gpgroup/Commonassets/commonAppbar.dart';
+import 'package:gpgroup/Model/Income/Income.dart';
 import 'package:gpgroup/Model/Project/ProjectDetails.dart';
 
 import 'package:gpgroup/Model/User.dart';
@@ -27,10 +28,17 @@ class _HomeState extends State<Home> {
   String brokerID;
   String token ;
   bool loading = true;
+  List<IncomeModel> _data;
+  int receivedCommission = 0;
+  int totalCommission = 0;
+  int remainingCommission =0;
+  String currentMonth;
+  DateTime now = DateTime.now();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+     currentMonth  ="${now.month}-${now.year}";
     prfs();
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -53,13 +61,48 @@ class _HomeState extends State<Home> {
   }
   Future prfs()async {
   token =await _firebaseMessaging.getToken();
-    preferences.then((SharedPreferences prefs) {
-      setState(() {
+   await preferences.then((SharedPreferences prefs) {
+
         brokerID = prefs.getString('BrokerId');
-        loading = false;
-      });
+
+    });
+   await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      loading = false;
     });
   }
+  void findCurrentMonth(List<IncomeModel> querySnapshot,String desiredMonth){
+    print(querySnapshot.length);
+    _data =querySnapshot;
+    // _data.sort((a,b)=>a.emiMonthTimestamp.toString().compareTo(b.emiMonthTimestamp.toString()));
+   // String currentMonth  ="${now.month}-${now.year}";
+    int _index = querySnapshot.indexWhere((element) => element.month == desiredMonth);
+
+    if( _index != -1){
+      print(_data[0].month);
+      _data.insert(0, _data[_index]);
+      _data.removeAt(_index);
+
+    }
+    calculate(_data[0]);
+  }
+  void calculate(IncomeModel brokerSaleDetails){
+    receivedCommission = 0;
+    totalCommission = 0;
+    remainingCommission =0;
+    for(int i=0;i<brokerSaleDetails.clientData.length;i++){
+      totalCommission =totalCommission + brokerSaleDetails.clientData[i]['Commission'];
+      print(totalCommission);
+      if(brokerSaleDetails.clientData[i]['IsPay']){
+        receivedCommission =  receivedCommission+ brokerSaleDetails.clientData[i]['Commission'];
+      }else{
+        remainingCommission = remainingCommission+brokerSaleDetails.clientData[i]['Commission'];
+      }
+
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
   
@@ -70,13 +113,15 @@ class _HomeState extends State<Home> {
  projectRetrieve.setBrokerId(brokerID);
 
     return Scaffold(
-      appBar: commonappBar(IconButton(icon: Icon(Icons.exit_to_app), onPressed: ()async{
+      appBar: commonAppbar(IconButton(icon: Icon(Icons.exit_to_app), onPressed: ()async{
         await LogInAndSignIn().signouts(brokerID);
       })),
       body: loading ?CircularLoading(): StreamBuilder<ProjectAndAdvertise>(
           stream: projectRetrieve.BROKERDATAANDADVERTISE(),
           builder:(context,snapshot){
             if(snapshot.hasData){
+
+              findCurrentMonth(snapshot.data.commission,currentMonth);
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -100,7 +145,9 @@ class _HomeState extends State<Home> {
                         itemCount: snapshot.data.advertiseList.length,
                         itemBuilder: (BuildContext context,index){
                           return Card(
-                            child: Column(
+                            child: snapshot.data.advertiseList.length <=0?
+                             Image.asset('assets/defaultads.png')
+                            :Column(
                               children: [
                                 Expanded(
                                   child: Image.network(
@@ -126,6 +173,8 @@ class _HomeState extends State<Home> {
                         }
                     ),
                     SizedBox(height: size.height *0.01,),
+                  Text(brokerID),
+                    Text(AppLocalizations.of(context).translate('Language'))
 
                   ],
                 ),

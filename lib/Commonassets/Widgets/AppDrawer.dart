@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gpgroup/Pages/Project/BrokerSalesDetails.dart';
 import 'package:gpgroup/Pages/Project/Clients/Clients.dart';
+import 'package:gpgroup/Pages/Setting/Lang/Lang.dart';
 
 import 'package:gpgroup/app_localization/app_localizations.dart';
 
@@ -64,6 +65,29 @@ class _AppDrawerState extends State<AppDrawer> {
                 Icon(Icons.group),
                 SizedBox(width: spaceHor,),
                 Text(AppLocalizations.of(context).translate('Income'))
+              ],
+            ),
+          ),
+          ListTile(
+            onTap: (){
+              Navigator.pop(context);
+              return    Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => SelectLanguage(),
+                  transitionDuration: Duration(seconds: 0),
+                ),
+              );
+
+              // return Navigator.push(context,MaterialPageRoute(builder: (context)=>Home() ));
+
+            },
+            title: Row(
+
+              children: [
+                Icon(Icons.group),
+                SizedBox(width: spaceHor,),
+                Text(AppLocalizations.of(context).translate('Language'))
               ],
             ),
           ),
