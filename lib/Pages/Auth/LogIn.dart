@@ -96,6 +96,13 @@ class _LoginState extends State<Login> {
                 errorMessage =AppLocalizations.of(context).translate('Thisuserhasnopermissiontologin');
               });
             }
+            else{
+              setState(() {
+                error = true;
+                loading = false;
+                errorMessage =AppLocalizations.of(context).translate('Thisuserhasnopermissiontologin');
+              });
+            }
 
               }
 

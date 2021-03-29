@@ -21,6 +21,7 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
       final brokerExist = await FirebaseFirestore.instance.collection('Broker').doc(id).get();
       if(brokerExist.exists){
+
       if(brokerExist.data()['Password']== password){
         if(brokerExist.data()['IsActive']){
           String notificationToken = await _firebaseMessaging.getToken();
@@ -46,7 +47,7 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
       }
       else{
-        print('false');
+
         return false;
       }
       

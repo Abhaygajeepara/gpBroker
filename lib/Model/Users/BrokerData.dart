@@ -12,33 +12,37 @@ class  BrokerModel{
   List<Map<String,dynamic>> clients;
   List remainingEmi;
   List<String> notificationKey;
+  List<Map<String,dynamic>> closedBooking;
   BrokerModel({
     @required this.id,
     @required this.name,
-  @required this.number,
+    @required this.number,
     @required this.alterNativeNumber,
     @required  this.image,
     @required this.password,
     @required  this.isActiveUser,
     @required this.clients,
     @required this.remainingEmi,
-    @required this.notificationKey
+    @required this.notificationKey,
+    @required this.closedBooking
+
   });
 
-    factory BrokerModel.of(DocumentSnapshot snapshot ){
-      return BrokerModel(
-          id: snapshot.data()['Id'],
-          name: snapshot.data()['Name'],
-          number: snapshot.data()['PhoneNumber'],
-          alterNativeNumber: snapshot.data()['AlterNativeNumber'],
-          image: snapshot.data()['ProfileUrl'],
-          isActiveUser: snapshot.data()['IsActive'],
-          password: snapshot.data()['Password'],
-          remainingEmi:  List.from(snapshot.data()['RemainingEMI']),
-          clients: List.from(snapshot.data()['ClientsList']),
-        notificationKey: List.from(snapshot.data()['NotificationKey'])
-      );
-    }
+  factory BrokerModel.of(DocumentSnapshot snapshot ){
+    return BrokerModel(
+        id: snapshot.data()['Id'],
+        name: snapshot.data()['Name'],
+        number: snapshot.data()['PhoneNumber'],
+        alterNativeNumber: snapshot.data()['AlterNativeNumber'],
+        image: snapshot.data()['ProfileUrl'],
+        isActiveUser: snapshot.data()['IsActive'],
+        password: snapshot.data()['Password'],
+        remainingEmi:  List.from(snapshot.data()['RemainingEMI']),
+        clients: List.from(snapshot.data()['ClientsList']),
+        notificationKey: List.from(snapshot.data()['NotificationKey']),
+        closedBooking: List.from(snapshot.data()['ClosedBooking'])
+    );
+  }
 }
 
 // fields of database
@@ -51,3 +55,4 @@ class  BrokerModel{
 // "CustomerName":customerName,
 // "IsPay":false,
 //ClientsList [LoanRef,]ProjectName,PhoneNumber,CustomerName
+//ClosedBooking

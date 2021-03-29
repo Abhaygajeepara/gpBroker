@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gpgroup/Model/Advertise/AdvertiseMode.dart';
+import 'package:gpgroup/Model/AppVersion/Version.dart';
 import 'package:gpgroup/Model/Income/Income.dart';
 import 'package:gpgroup/Model/Loan/LoanInfo.dart';
 import 'package:gpgroup/Model/Project/ProjectDetails.dart';
@@ -48,8 +49,8 @@ class ProjectRetrieve{
     return adsReference.orderBy('IsActive',descending: false).limit(2).snapshots().map(_advertise);
   }
   Stream<ProjectAndAdvertise> BROKERDATAANDADVERTISE(){
-    return Rx.combineLatest2(SINGLEBROKERDATA, THREEADVERTISE, (BrokerModel brokerModel, List<AdvertiseModel> _adver) {
-      return ProjectAndAdvertise(brokerModel:  brokerModel, advertiseList:  _adver);
+    return Rx.combineLatest3(SINGLEBROKERDATA, THREEADVERTISE,BROKERSALESDETAILS, (BrokerModel brokerModel, List<AdvertiseModel> _adver,List<IncomeModel> _commission) {
+      return ProjectAndAdvertise(brokerModel:  brokerModel, advertiseList:  _adver,commission: _commission);
     } );
   }
   List<SinglePropertiesLoanInfo> _listLoanData (QuerySnapshot querySnapshot){
@@ -75,5 +76,11 @@ class ProjectRetrieve{
   Stream<List<IncomeModel>> get BROKERSALESDETAILS{
     print(brokerId);
     return brokerReference.doc(brokerId).collection('Commission').orderBy("MonthTimeStamp",descending: false).snapshots().map(_brokerSales);
+  }
+  AppVersion appVersion(DocumentSnapshot snapshot){
+    return AppVersion.of(snapshot);
+  }
+  Stream<AppVersion> get APPVERSION{
+    return infoReference.doc('BrokerApp').snapshots().map(appVersion);
   }
 }

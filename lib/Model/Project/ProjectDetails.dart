@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gpgroup/Model/Advertise/AdvertiseMode.dart';
+import 'package:gpgroup/Model/Income/Income.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
 
 class  ProjectNameList{
@@ -58,8 +59,9 @@ int siteVisit;
 class ProjectAndAdvertise{
   BrokerModel brokerModel;
     List<AdvertiseModel> advertiseList;
-    ProjectAndAdvertise({@required this.brokerModel,@required this.advertiseList});
-    factory ProjectAndAdvertise.of(  BrokerModel brokerModels,  List<AdvertiseModel> _advertiseList){
-      return ProjectAndAdvertise(brokerModel: brokerModels, advertiseList: _advertiseList);
+  List<IncomeModel> commission;
+    ProjectAndAdvertise({@required this.brokerModel,@required this.advertiseList,@required this.commission});
+    factory ProjectAndAdvertise.of(  BrokerModel brokerModels,  List<AdvertiseModel> _advertiseList, List<IncomeModel> _commission){
+      return ProjectAndAdvertise(brokerModel: brokerModels, advertiseList: _advertiseList,commission: _commission);
     }
 }

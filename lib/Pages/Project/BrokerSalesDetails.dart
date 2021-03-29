@@ -55,7 +55,7 @@ class _BrokerSalesDetailsState extends State<BrokerSalesDetails> {
     final  expanedTileSpace =size.height *0.012;
 
     return Scaffold(
-      appBar: commonappBar(Container()),
+      appBar: commonAppbar(Container()),
       body: StreamBuilder<List<IncomeModel>>(
         stream: _projectRetrieve.BROKERSALESDETAILS,
         builder: (context,snapshot){
