@@ -11,6 +11,7 @@ import 'package:gpgroup/Model/Project/ProjectDetails.dart';
 
 import 'package:gpgroup/Model/User.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
+import 'package:gpgroup/Pages/Project/Wallet/Wallet.dart';
 import 'package:gpgroup/Service/Auth/LoginAuto.dart';
 import 'package:gpgroup/Service/ProjectRetrieve.dart';
 import 'package:gpgroup/app_localization/app_localizations.dart';
@@ -38,8 +39,9 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     currentMonth  ="${now.month}-${now.year}";
     prfs();
+     currentMonth  ="${now.month}-${now.year}";
+
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
@@ -61,46 +63,18 @@ class _HomeState extends State<Home> {
   }
   Future prfs()async {
   token =await _firebaseMessaging.getToken();
-   await preferences.then((SharedPreferences prefs) {
+   await preferences.then((SharedPreferences prefs) async{
+        brokerID =  prefs.getString('BrokerId');
 
-        brokerID = prefs.getString('BrokerId');
-
-    });
-   await Future.delayed(Duration(seconds: 1));
+   });
+  if(brokerID != ""){
     setState(() {
       loading = false;
     });
   }
-  void findCurrentMonth(List<IncomeModel> querySnapshot,String desiredMonth){
-    print(querySnapshot.length);
-    _data =querySnapshot;
-    // _data.sort((a,b)=>a.emiMonthTimestamp.toString().compareTo(b.emiMonthTimestamp.toString()));
-   // String currentMonth  ="${now.month}-${now.year}";
-    int _index = querySnapshot.indexWhere((element) => element.month == desiredMonth);
 
-    if( _index != -1){
-      print(_data[0].month);
-      _data.insert(0, _data[_index]);
-      _data.removeAt(_index);
-
-    }
-    calculate(_data[0]);
   }
-  void calculate(IncomeModel brokerSaleDetails){
-    receivedCommission = 0;
-    totalCommission = 0;
-    remainingCommission =0;
-    for(int i=0;i<brokerSaleDetails.clientData.length;i++){
-      totalCommission =totalCommission + brokerSaleDetails.clientData[i]['Commission'];
-      print(totalCommission);
-      if(brokerSaleDetails.clientData[i]['IsPay']){
-        receivedCommission =  receivedCommission+ brokerSaleDetails.clientData[i]['Commission'];
-      }else{
-        remainingCommission = remainingCommission+brokerSaleDetails.clientData[i]['Commission'];
-      }
 
-    }
-  }
 
 
   @override
@@ -113,15 +87,34 @@ class _HomeState extends State<Home> {
  projectRetrieve.setBrokerId(brokerID);
 
     return Scaffold(
-      appBar: commonAppbar(IconButton(icon: Icon(Icons.exit_to_app), onPressed: ()async{
-        await LogInAndSignIn().signouts(brokerID);
-      })),
+      appBar: CommonAppbar(
+          Row(
+            children: [
+
+
+              IconButton(icon: Icon(Icons.account_balance_wallet), onPressed: ()async{
+                projectRetrieve.setRecordLimit(10);
+                return    Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => BrokerWallet (),
+                transitionDuration: Duration(seconds: 0),
+                ));
+              }
+              ),
+              IconButton(icon: Icon(Icons.exit_to_app), onPressed: ()async{
+                await LogInAndSignIn().signouts(brokerID);
+              }
+              ),
+            ],
+          )
+      ),
       body: loading ?CircularLoading(): StreamBuilder<ProjectAndAdvertise>(
           stream: projectRetrieve.BROKERDATAANDADVERTISE(),
           builder:(context,snapshot){
             if(snapshot.hasData){
 
-              findCurrentMonth(snapshot.data.commission,currentMonth);
+           //   findCurrentMonth(snapshot.data.commission,currentMonth);
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -198,3 +191,33 @@ class _HomeState extends State<Home> {
     );
   }
 }
+// void findCurrentMonth(List<IncomeModel> querySnapshot,String desiredMonth){
+//   print(querySnapshot.length);
+//   _data =querySnapshot;
+//   // _data.sort((a,b)=>a.emiMonthTimestamp.toString().compareTo(b.emiMonthTimestamp.toString()));
+//  // String currentMonth  ="${now.month}-${now.year}";
+//   int _index = querySnapshot.indexWhere((element) => element.month == desiredMonth);
+//
+//   if( _index != -1){
+//     print(_data[0].month);
+//     _data.insert(0, _data[_index]);
+//     _data.removeAt(_index);
+//
+//   }
+//   calculate(_data[0]);
+// }
+// void calculate(IncomeModel brokerSaleDetails){
+//   receivedCommission = 0;
+//   totalCommission = 0;
+//   remainingCommission =0;
+//   for(int i=0;i<brokerSaleDetails.clientData.length;i++){
+//     totalCommission =totalCommission + brokerSaleDetails.clientData[i]['Commission'];
+//     print(totalCommission);
+//     if(brokerSaleDetails.clientData[i]['IsPay']){
+//       receivedCommission =  receivedCommission+ brokerSaleDetails.clientData[i]['Commission'];
+//     }else{
+//       remainingCommission = remainingCommission+brokerSaleDetails.clientData[i]['Commission'];
+//     }
+//
+//   }
+// }

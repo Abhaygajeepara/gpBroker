@@ -21,6 +21,7 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
       final brokerExist = await FirebaseFirestore.instance.collection('Broker').doc(id).get();
       if(brokerExist.exists){
+        preferences.setString('BrokerId',id);
 
       if(brokerExist.data()['Password']== password){
         if(brokerExist.data()['IsActive']){
@@ -30,7 +31,7 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
           await FirebaseFirestore.instance.collection('Broker').doc(id).update({
             "NotificationKey":FieldValue.arrayUnion([notificationToken]),
           });
-          preferences.setString('BrokerId',id);
+
           return  UserData.of(brokerExist);
         }
         else{
@@ -54,7 +55,8 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
      
     }
     catch(e){
-      
+      print(e.toString());
+      print('error in login');
     }
   }
 

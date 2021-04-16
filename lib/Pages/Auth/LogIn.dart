@@ -29,14 +29,16 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return  Scaffold(
-     body: loading ?CircularLoading(): Center(
-       child: Container(
-         child:  Form(
+      resizeToAvoidBottomInset: false,
+     body: loading ?CircularLoading(): Container(
+       //height: size.height,
+       child: Center(
+         child: Form(
            key: _formkey,
            child: Padding(
                padding:  EdgeInsets.symmetric(horizontal: size.width * 0.10),
                child: Column(
-                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                    crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
                TextFormField(
@@ -96,12 +98,14 @@ class _LoginState extends State<Login> {
                 errorMessage =AppLocalizations.of(context).translate('Thisuserhasnopermissiontologin');
               });
             }
-            else{
+            else if(result == false){
               setState(() {
                 error = true;
                 loading = false;
                 errorMessage =AppLocalizations.of(context).translate('Thisuserhasnopermissiontologin');
               });
+            }else{
+
             }
 
               }
@@ -113,7 +117,7 @@ class _LoginState extends State<Login> {
                    color: Colors.white
                ),
              ),
-           ),]),),)
+           ),]),),),
        ),
      ),
     );

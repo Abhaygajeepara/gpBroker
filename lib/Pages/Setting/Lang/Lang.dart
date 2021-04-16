@@ -36,7 +36,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
 
     final langChange = Provider.of<LangChange>(context);
     return Scaffold(
-      appBar: commonAppbar(Container()),
+      appBar: CommonAppbar(Container()),
       body: Padding(
         padding: EdgeInsets.all(10.0),
         child:loading?CircularLoading(): ListView.builder(

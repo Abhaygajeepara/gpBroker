@@ -141,6 +141,7 @@
   "AddExpense": "खर्च जोड़ें",
   "Total": "कुल",
   "Remaining":"शेष",
+  "RemainingEMI":"शेष ई.एम.आई",
   "Received": "प्राप्त",
 
   "BankAccountNumber":"Bank Account Number",
@@ -162,6 +163,20 @@
   "Ads": "विज्ञापन",
   "IDIsExist": "आई.डी अस्तित्ववादी है",
   "MostVisitedSite": "सबसे अधिक देखी गई साइट",
-  "Thisuserhasnopermissiontologin": "इस उपयोगकर्ता को लॉग इन करने की कोई अनुमति नहीं है",
-  "CancelBooking": "कैंसल बुकिंग"
+  "ExtraMoney": "अतिरिक्त पैसे",
+  "PreviousCustomer": "पहले के ग्राहक",
+  "Paid": "चुकाया हुआ",
+  "Installment": "किश्त",
+  "Services":"सेवाएं",
+  "Customer": "ग्राहक",
+  "Booking": "बुकिंग",
+  "CancelBooking": "कैंसल बुकिंग",
+  "NoAds":"NoAds",
+  "Balances": "बैलेंस",
+  "Pay": "भुगतान करना",
+  "AddBroker": "ब्रोकर ऐड करो",
+  "NoData": "कोई डाटा उपलब्ध नहीं है",
+  "AllData": "सभी डेटा",
+  "Payment": "भुगतान"
+
 }

@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CommonAssets{
-   //static Color AppbarColor =   Color(0xff73c5bc);
+  //static Color AppbarColor =   Color(0xff73c5bc);
 //static Color AppbarColor =   Colors.black;
   static Color AppbarTextColor = Colors.white;
   static Color buttonTextColor = Colors.white;
+  static Color unSelectedTextColor = Colors.black;
   static String apptitle = 'GP Group ';
   // only for loading page
   static Color registerTextColor =Colors.blue;
@@ -32,6 +33,12 @@ class CommonAssets{
   static Color soldProduct =Colors.white;
   static Color paidEmiCardColor = Colors.grey;
   static Color editIconColor = Colors.black;
+  static Color unSelectedItem = Colors.white;
+  static Color receivedAmountColor  = Colors.green;
+  static Color remainingAmountColor  = Colors.red;
+
+
+
 
 
 }

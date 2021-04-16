@@ -13,6 +13,7 @@ class  BrokerModel{
   List remainingEmi;
   List<String> notificationKey;
   List<Map<String,dynamic>> closedBooking;
+  int walletBalance;
   BrokerModel({
     @required this.id,
     @required this.name,
@@ -24,7 +25,8 @@ class  BrokerModel{
     @required this.clients,
     @required this.remainingEmi,
     @required this.notificationKey,
-    @required this.closedBooking
+    @required this.closedBooking,
+    @required this.walletBalance
 
   });
 
@@ -40,7 +42,8 @@ class  BrokerModel{
         remainingEmi:  List.from(snapshot.data()['RemainingEMI']),
         clients: List.from(snapshot.data()['ClientsList']),
         notificationKey: List.from(snapshot.data()['NotificationKey']),
-        closedBooking: List.from(snapshot.data()['ClosedBooking'])
+        closedBooking: List.from(snapshot.data()['ClosedBooking']),
+        walletBalance: snapshot.data()['WalletBalance']
     );
   }
 }

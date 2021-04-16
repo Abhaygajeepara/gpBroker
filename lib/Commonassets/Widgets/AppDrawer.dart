@@ -51,7 +51,7 @@ class _AppDrawerState extends State<AppDrawer> {
               return   await Navigator.push(
                 context,
                 PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => BrokerSalesDetails(),
+                  pageBuilder: (_, __, ___) => BrokerCommission(),
                   transitionDuration: Duration(seconds: 0),
                 ),
               );

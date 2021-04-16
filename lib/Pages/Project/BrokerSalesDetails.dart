@@ -1,110 +1,532 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gpgroup/Commonassets/CommonLoading.dart';
 import 'package:gpgroup/Commonassets/Commonassets.dart';
+import 'package:gpgroup/Commonassets/InputDecoration/CommonInputDecoration.dart';
 import 'package:gpgroup/Commonassets/commonAppbar.dart';
-import 'package:gpgroup/Model/Income/Income.dart';
-
+import 'package:gpgroup/Model/Loan/LoanInfo.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
-import 'package:gpgroup/Pages/Project/MonthlyBrokerIncome.dart';
+
+import 'package:gpgroup/Pages/Project/Loan/SingleLoan.dart';
 import 'package:gpgroup/Service/ProjectRetrieve.dart';
 
 import 'package:gpgroup/app_localization/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-class BrokerSalesDetails extends StatefulWidget {
-
+class BrokerCommission extends StatefulWidget {
   @override
-  _BrokerSalesDetailsState createState() => _BrokerSalesDetailsState();
+  _BrokerCommissionState createState() => _BrokerCommissionState();
 }
 
-class _BrokerSalesDetailsState extends State<BrokerSalesDetails> {
-  DateTime now = DateTime.now();
-  List<IncomeModel> _data =[];
+class _BrokerCommissionState extends State<BrokerCommission> {
 
+  bool loading = true;
+  DateTime now = DateTime.now();
+  int desireMonth ;
+  int desireYear ;
+  List<SinglePropertiesLoanInfo> desireMonthRemaining=[];
+  List<SinglePropertiesLoanInfo> desireMonthPaid=[];
+  // index
+  int projectIndex =0;
+  int subIndex =0;
+  int totalAmount=0;
+  int remainingAmount=0;
+  int paidAmount=0;
+  List monthList = [1,2,3,4,5,6,7,8,9,10,11,12];
+  // index end
+  setData(ProjectRetrieve _projectRetrieve,List clients)async{
+
+    await _projectRetrieve.checkBrokercommission(clients);
+
+  }
+  setDesiredMonthData(CommissionCountModel _commissionData)async{
+    desireMonthRemaining=[];
+    desireMonthPaid=[];
+    totalAmount=0;
+    remainingAmount=0;
+    paidAmount=0;
+    for(int j=0;j<_commissionData.remainingEmi.length;j++){
+      int localMonth =_commissionData.remainingEmi[j].installmentDate.toDate().month;
+      int localYear = _commissionData.remainingEmi[j].installmentDate.toDate().year  ;
+      if(localMonth== desireMonth && localYear == desireYear){
+        totalAmount = totalAmount +_commissionData.remainingEmi[j].brokerCommission;
+        remainingAmount = remainingAmount +_commissionData.remainingEmi[j].brokerCommission;
+        desireMonthRemaining.add(_commissionData.remainingEmi[j]);
+
+
+      }
+    }
+    for(int k=0;k<_commissionData.paidEmi.length;k++){
+      int localMonth =_commissionData.paidEmi[k].installmentDate.toDate().month;
+      int localYear = _commissionData.paidEmi[k].installmentDate.toDate().year  ;
+      if(localMonth== desireMonth && localYear == desireYear){
+        totalAmount = totalAmount +_commissionData.paidEmi[k].brokerCommission;
+        paidAmount = paidAmount +_commissionData.paidEmi[k].brokerCommission;
+        desireMonthPaid.add(_commissionData.paidEmi[k]);
+
+
+      }
+    }
+
+    print(desireMonthPaid);
+
+    // setState(() {
+    //   loading =false;
+    // });
+
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    desireMonth = now.month;
+    desireYear = now.year;
   }
-  void findCurrentMonth(List<IncomeModel> querySnapshot){
-    print(querySnapshot.length);
-    _data =querySnapshot;
-    // _data.sort((a,b)=>a.emiMonthTimestamp.toString().compareTo(b.emiMonthTimestamp.toString()));
-    String currentMonth  ="${now.month}-${now.year}";
-    int _index = querySnapshot.indexWhere((element) => element.month == currentMonth);
-
-    if( _index != -1){
-      print(_data[0].month);
-      _data.insert(0, _data[_index]);
-      _data.removeAt(_index);
-
-    }
-
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
-    final _projectRetrieve  =  Provider.of<ProjectRetrieve>(context);
 
-    final size = MediaQuery.of(context).size;
-    final titileSize = size.height /size.width  *8 ;
-    final mainTitileSize = size.height /size.width *16 ;
-    final normatTextSize = size.height /size.width  *7;
-    final fontWeight =FontWeight.bold;
-    final  verticalSizeBox = size.height *0.05;
-    final  expanedTileSpace =size.height *0.012;
+    final _projectRetrieve = Provider.of<ProjectRetrieve>(context);
 
-    return Scaffold(
-      appBar: commonAppbar(Container()),
-      body: StreamBuilder<List<IncomeModel>>(
-        stream: _projectRetrieve.BROKERSALESDETAILS,
-        builder: (context,snapshot){
-          if(snapshot.hasData){
-            findCurrentMonth(snapshot.data);
-            return ListView.builder(
-                itemCount: _data.length,
-                itemBuilder: (context,index){
-                  return Padding(
-                    padding:  EdgeInsets.symmetric(vertical:index == 0?size.height *0.01:0.0 ),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: index == 0?Theme.of(context).primaryColor:CommonAssets.boxBorderColors,
-                            width: index == 0?4:0,
-                          )
-                      ),
-                      child: ListTile(
-                        onTap: ()async{
-                          Navigator.push(context, PageRouteBuilder(
-                            //    pageBuilder: (_,__,____) => BuildingStructure(),
-                            pageBuilder: (_,__,___)=>
-                                MonthlyBrokerIncome(brokerSaleDetails: _data[index]),
-                            transitionDuration: Duration(milliseconds: 0),
-                          ));
-                        },
-                        title: Text(_data[index].month.toString()),
-                      ),
-                    ),
-                  );
-                });
-          }
-          else if(snapshot.hasError){
+    List<String> subScroll = [
+      '${desireMonth}-${desireYear}',
+      AppLocalizations.of(context).translate('RemainingEMI'),
+      AppLocalizations.of(context).translate('PaidEMI'),
+
+    ];
+    Widget selectDate(){
+      final size = MediaQuery.of(context).size;
+
+      showDialog(
+          context: context,
+          builder: (context){
             return Container(
-              child: Center(
-                child: Text(
-                  snapshot.error.toString()
-                  , //CommonAssets.snapshoterror,
-                  style: TextStyle(
-                      color: CommonAssets.errorColor
-                  ),),
+
+              child: AlertDialog(
+
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      DropdownButtonFormField(
+                        decoration: commoninputdecoration.copyWith(
+                            labelText: AppLocalizations.of(context)
+                                .translate('Month')),
+                        value: desireMonth,
+                        onChanged: (val){
+                          setState(() {
+                            desireMonth = val;
+
+                          });
+                        },
+                        items: monthList.map((e){
+                          return DropdownMenuItem(
+                              value: e,
+                              child: Row(
+                                children: [
+                                  Text(e.toString())
+                                ],
+
+                              )
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(height: size.height*0.02,),
+                      TextFormField(
+
+                        initialValue: desireYear.toString(),
+                        onChanged: (val)=>desireYear =int.parse( val),
+                        decoration: commoninputdecoration.copyWith(
+                            labelText: AppLocalizations.of(context)
+                                .translate('Year')),
+
+                      )
+                    ],
+                  )
               ),
             );
           }
-          else {
-            return CircularLoading();
-          }
-        },
-      ),
+      );
+    }
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: CommonAppbar(
+          IconButton(icon: Icon(Icons.date_range), onPressed: (){
+            selectDate();
+          })),
+      body: StreamBuilder<BrokerModel>(
+          stream: _projectRetrieve.SINGLEBROKERDATA,
+          builder: (context,brokerSnapshot){
+            if(brokerSnapshot.hasData){
+              setData(_projectRetrieve, brokerSnapshot.data.clients);
+
+              return StreamBuilder<List<CommissionCountModel>>(
+                  stream: _projectRetrieve.ACCOUNTCOMMISSION,
+                  builder: (context,snapshot){
+                    if(snapshot.hasData){
+                      if(snapshot.data.length>0){
+                        setDesiredMonthData(snapshot.data[projectIndex]);
+                      }
+                      //padding:  EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.01),
+                      return snapshot.data.length<=0?
+                      Center(child: Text(
+                        AppLocalizations.of(context).translate('NoData'),
+                        style: TextStyle(
+                            color: CommonAssets.errorColor,
+                            fontSize: size.height*0.05
+                        ),
+                      ),):
+                      RefreshIndicator(
+                        onRefresh: ()async{
+                          setData(_projectRetrieve, brokerSnapshot.data.clients);
+                          setState(() {
+
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              height: size.height*0.07,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder: (context,index){
+                                    return Container(
+                                        width: size.width/3,
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            setState(() {
+                                              projectIndex = index;
+                                            });
+                                          },
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: projectIndex==index?CommonAssets.selectedBorderColors:CommonAssets.unselectedBorderColors
+                                                ),
+                                                borderRadius: BorderRadius.circular(20.0)
+
+                                            ),
+                                            color: projectIndex==index?Theme.of(context).primaryColor:CommonAssets.unSelectedItem,
+                                            child: Center(child: Text(snapshot.data[index].projectName,
+                                              style: TextStyle(
+                                                  color:projectIndex==index? CommonAssets.buttonTextColor:CommonAssets.unSelectedTextColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: size.height*0.02
+                                              ),
+                                            ),
+                                            ),),
+                                        ));
+                                  }),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                //border: Border.all(color: CommonAssets.boxBorderColors)
+                              ),
+                              height:  size.height*0.07,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: subScroll.length,
+                                  itemBuilder: (context,index){
+                                    return Container(
+                                        width: size.width/3,
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            setState(() {
+
+                                              subIndex = index;
+                                            });
+                                          },
+
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: subIndex!=index?CommonAssets.selectedBorderColors:CommonAssets.unselectedBorderColors
+                                                ),
+                                                borderRadius: BorderRadius.circular(20.0)
+
+                                            ),
+                                            color: subIndex!=index?Theme.of(context).primaryColor:CommonAssets.unSelectedItem,
+                                            child: Center(child: Text(subScroll[index],
+                                              style: TextStyle(
+                                                  color:subIndex!=index? CommonAssets.buttonTextColor:CommonAssets.unSelectedTextColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: size.height*0.02
+                                              ),
+                                            ),
+                                            ),),
+                                        ));
+                                  }),
+                            ),
+                            Expanded(
+                                child: redirectWidget(snapshot.data[projectIndex],_projectRetrieve,context)
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                    else if (snapshot.hasError) {
+                      return Container(
+                        child: Center(
+                          child: Text(
+                            snapshot.error.toString(),
+                            // CommonAssets.snapshoterror,
+                            style: TextStyle(color: CommonAssets.errorColor),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                          height: size.height,
+                          child: Center(child: CircularLoading()));
+                    }
+                  });
+            }
+            else if (brokerSnapshot.hasError) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    brokerSnapshot.error.toString(),
+                    // CommonAssets.snapshoterror,
+                    style: TextStyle(color: CommonAssets.errorColor),
+                  ),
+                ),
+              );
+            } else {
+              return Container(
+                  height: size.height,
+                  child: Center(child: CircularLoading()));
+            }
+          }),
     );
   }
+
+  redirectWidget(CommissionCountModel commissionCountModel,ProjectRetrieve _projectRetrieve,BuildContext context) {
+
+    String projectName = commissionCountModel.projectName;
+    if(subIndex ==0){
+      return  selectedMomthData( _projectRetrieve, projectName);
+    }
+    else if(subIndex ==1){
+      // remainingEmi;
+      return EMIWidget(commissionCountModel.remainingEmi,false,_projectRetrieve,projectName);
+    }
+    else{
+      // padiEmi;
+      return EMIWidget(commissionCountModel.paidEmi,true,_projectRetrieve,projectName);
+    }
+  }
+
+  selectedMomthData(
+      ProjectRetrieve _projectRetrieve,String projectName){
+    final size =MediaQuery.of(context).size;
+    final fontSize = size.height*0.02;
+    final spcaeVertical  = size.height*0.01;
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(child: EMIWidget(desireMonthRemaining,false,_projectRetrieve,projectName)),
+              Expanded(child: EMIWidget(desireMonthPaid,true,_projectRetrieve,projectName))
+            ],
+          ),
+        ),
+        Padding(
+          padding:  EdgeInsets.symmetric(vertical: size.height*0.01,horizontal: size.width*0.01),
+          child: Container(
+              padding: EdgeInsets.symmetric(vertical: size.height*0.01,horizontal: size.width*0.01),
+              decoration: BoxDecoration(
+                color:  Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(10.0),
+
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).translate('Total'),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize
+                          ),
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('Income'),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize
+                          ),
+                        ),
+
+                        SizedBox(
+                          height: spcaeVertical,
+                        ),
+                        Text(
+                          totalAmount.toString(),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+
+                              fontSize: fontSize
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).translate('Received'),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize
+                          ),
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('Income'),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize
+                          ),
+                        ),
+                        SizedBox(
+                          height: spcaeVertical,
+                        ),
+                        Text(
+                          paidAmount.toString(),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+
+                              fontSize: fontSize
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).translate('Remaining'),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize
+                          ),
+                        ),
+                        Text(
+                          AppLocalizations.of(context).translate('Income'),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize
+                          ),
+                        ),
+
+                        SizedBox(
+                          height: spcaeVertical ,
+                        ),
+                        Text(
+                          remainingAmount.toString(),
+                          style: TextStyle(
+                              color: CommonAssets.AppbarTextColor,
+
+                              fontSize: fontSize
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+          ),
+        )
+      ],
+    );
+  }
+
+  EMIWidget( List<SinglePropertiesLoanInfo> singlePropertiesLoanInfo,
+      bool isPaidEmiData,ProjectRetrieve _projectRetrieve,String projectName){
+    Color amountTextColor = isPaidEmiData?CommonAssets.receivedAmountColor:CommonAssets.remainingAmountColor;
+    singlePropertiesLoanInfo.sort((a,b)=>a.installmentDate.compareTo(b.installmentDate));
+    return ListView.builder(
+        itemCount: singlePropertiesLoanInfo.length,
+        itemBuilder: (context,index){
+          return Card(
+            child: ListTile(
+                onTap: ()async{
+                  // project is set on parent redirectWidget
+                  await _projectRetrieve.setProjectName(projectName);
+                  await _projectRetrieve.setPropertiesLoanRef(singlePropertiesLoanInfo[index].loanId);
+                  Navigator.push(context, PageRouteBuilder(
+                    //    pageBuilder: (_,__,____) => BuildingStructure(),
+                    pageBuilder: (_,__,___)=> SingleLoan(),
+                    transitionDuration: Duration(milliseconds: 0),
+                  ));
+                },
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(child: Text(singlePropertiesLoanInfo[index].emiId.toString(),style: TextStyle(
+                        color: amountTextColor
+                    ),),),
+                    Flexible(child: Text("₹"+singlePropertiesLoanInfo[index].brokerCommission.toString(),
+                      style: TextStyle(
+                          color: amountTextColor
+                      ),
+                    ),),
+                  ],
+                ),
+                subtitle: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(AppLocalizations.of(context).translate('LoanId')),
+                        Text(singlePropertiesLoanInfo[index].loanId.toString()),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(AppLocalizations.of(context).translate('EMIDate')),
+                        Text(singlePropertiesLoanInfo[index].installmentDate.toDate().toString().substring(0,16)),
+                      ],
+                    ),
+                    isPaidEmiData?  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(AppLocalizations.of(context).translate('Payment')),
+                        Text(singlePropertiesLoanInfo[index].paymentTime.toDate().toString().substring(0,16)),
+                      ],
+                    ):Container(),
+                  ],
+                )
+
+
+
+            ),
+          );
+        });
+
+  }
+
+
+
 }

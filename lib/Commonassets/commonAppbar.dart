@@ -9,7 +9,7 @@ import 'package:gpgroup/Commonassets/Commonassets.dart';
 //
 //   );
 // }
-Widget commonAppbar(Widget appwidget){
+Widget CommonAppbar(Widget appwidget){
   return AppBar(
     title : Text(CommonAssets.apptitle,style: TextStyle(color: Colors.white),),
   iconTheme:IconThemeData(color: Colors.white) ,

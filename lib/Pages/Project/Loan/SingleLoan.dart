@@ -18,7 +18,7 @@ class _SingleLoanState extends State<SingleLoan> {
   Widget build(BuildContext context) {
     final _projectRetrieve = Provider.of<ProjectRetrieve>(context);
     return Scaffold(
-      appBar: commonAppbar(Container()),
+      appBar: CommonAppbar(Container()),
       body: StreamBuilder<List<SinglePropertiesLoanInfo>>(
         stream: _projectRetrieve.LOANINFO,
         builder: (context,snapshot){

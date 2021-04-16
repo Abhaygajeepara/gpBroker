@@ -142,6 +142,7 @@
   "AddExpense": "Add Expense",
   "Total": "Total",
   "Remaining":"Remaining",
+  "RemainingEMI":"Remaining EMI",
   "Received": "Received",
 
 
@@ -165,6 +166,18 @@
   "Ads": "Ads",
   "IDIsExist": "ID Is Exist",
   "MostVisitedSite": "Most Visited Site",
-  "Thisuserhasnopermissiontologin": "This user has no permission to log in",
-  "CancelBooking": "Cancel Booking"
+  "ExtraMoney": "Extra Money",
+  "PreviousCustomer": "Previous Customer",
+  "Paid": "Paid",
+  "Installment": "Installment",
+  "Services":"Services",
+  "Customer": "Customer",
+  "CancelBooking": "Cancel Booking",
+  "NoAds":"NoAds",
+  "Balances": "Balances",
+  "Pay": "Pay",
+  "AddBroker": "Add Broker",
+  "NoData": "No Data",
+  "AllData": "All Data",
+  "Over": "Over"
 }

@@ -142,6 +142,7 @@
   "AddExpense": "ખર્ચ ઉમેરો",
   "Total": "કુલ",
   "Remaining":"બાકી",
+  "RemainingEMI":"બાકી ઇ.એમ.આઈ",
   "Received": "પ્રાપ્ત",
 
 
@@ -152,6 +153,12 @@
   "RelationWithCustomer": "ગ્રાહક સાથે સંબંધ",
   "TypeOfPayment": "ચુકવણીનો પ્રકાર",
   "UPIID": "યુ.પી.આઈ આઈ.ડી",
+
+  "Friend": "Friend",
+  "Family":"Family",
+  "Professional":"Professional",
+  "Self": "Self",
+
   "Search": "શોધો",
   "Customers": "ગ્રાહકો",
   "SearchByName": "નામ દ્વારા શોધો",
@@ -159,6 +166,17 @@
   "Ads": "જાહેરાતો",
   "IDIsExist": "આઈ.ડી અસ્તિત્વમાં છે",
   "MostVisitedSite": "સૌથી વધુ જોવાયેલી સાઇટ",
-  "Thisuserhasnopermissiontologin": "આ વપરાશકર્તાને લોગ ઈન કરવાની પરવાનગી નથી",
-  "CancelBooking": "કેન્સલ બુકિંગ"
+  "ExtraMoney": "વધારાના નાણાં",
+  "PreviousCustomer": "પહેલાનો ગ્રાહક",
+  "Paid": "ચૂકવેલ",
+  "Installment": "હપતો",
+  "Services":"સેવાઓ",
+  "Customer": "ગ્રાહક",
+  "CancelBooking": "કેન્સલ બુકિંગ ",
+  "NoAds":"NoAds",
+  "Balances": "બેલેન્સ",
+  "Pay": "ચૂકવો",
+  "AddBroker": "બ્રોકર ઉમેરો",
+  "NoData": "કોઈ ડેટા નથી",
+  "AllData": "બધા ડેટા"
 }
