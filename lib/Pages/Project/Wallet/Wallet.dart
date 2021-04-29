@@ -100,7 +100,9 @@ class _BrokerWalletState extends State<BrokerWallet> {
     //   );
     // }
     return Scaffold(
-      appBar: CommonAppbar(Container()),
+      appBar: CommonAppbar(
+        AppLocalizations.of(context).translate('Balances'),
+          Container()),
       body: StreamBuilder<BrokerWalletAndProfile>(
           stream: _projectRetrieve.BROKERWALLETANDPROFILE(),
           builder: (context,snapshot){
@@ -141,7 +143,9 @@ class _BrokerWalletState extends State<BrokerWallet> {
                           itemBuilder: (context,index){
                             Color textColor = snapshot.data.brokerWalletModel[index].isMoneyAddToWallet?CommonAssets.receivedAmountColor:CommonAssets.remainingAmountColor;
                             return Card(
-                              child: ListTile(
+                              child: ExpansionTile(
+
+                                childrenPadding: EdgeInsets.symmetric(vertical: size.height*0.01,horizontal: size.width*0.01),
                                 title: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -160,6 +164,46 @@ class _BrokerWalletState extends State<BrokerWallet> {
                                     ))
                                   ],
                                 ),
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                       AppLocalizations.of(context).translate('Date'),
+                                        style: TextStyle(
+                                            color: CommonAssets.normalTextColor
+                                        ),
+                                      ),
+
+                                      Flexible(child: Text(
+                                        snapshot.data.brokerWalletModel[index].transactionTime.toDate().toString().substring(0,16),
+                                        style: TextStyle(
+                                            color: textColor
+                                        ),
+                                      ))
+                                    ],
+                                  ),
+                                  SizedBox(height: size.height*0.01,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context).translate('Reason'),
+                                        style: TextStyle(
+                                            color: CommonAssets.normalTextColor
+                                        ),
+                                      ),
+                                      SizedBox(width: size.width*0.02,),
+                                      Flexible(child: Text(
+                                        snapshot.data.brokerWalletModel[index].reasonOfTransfer,
+                                        style: TextStyle(
+                                            color: textColor
+                                        ),
+                                      ))
+                                    ],
+                                  ),
+                                  SizedBox(height: size.height*0.01,),
+                                ],
                               ),
                             );
                           })),

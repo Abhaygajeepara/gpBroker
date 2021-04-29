@@ -1,6 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpgroup/Commonassets/CommonLoading.dart';
 import 'package:gpgroup/Commonassets/Commonassets.dart';
@@ -11,7 +14,9 @@ import 'package:gpgroup/Model/Project/ProjectDetails.dart';
 
 import 'package:gpgroup/Model/User.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
+import 'package:gpgroup/Pages/Project/Loan/SingleLoan.dart';
 import 'package:gpgroup/Pages/Project/Wallet/Wallet.dart';
+import 'package:gpgroup/Pages/Project/ZoomImage.dart';
 import 'package:gpgroup/Service/Auth/LoginAuto.dart';
 import 'package:gpgroup/Service/ProjectRetrieve.dart';
 import 'package:gpgroup/app_localization/app_localizations.dart';
@@ -34,6 +39,7 @@ class _HomeState extends State<Home> {
   int totalCommission = 0;
   int remainingCommission =0;
   String currentMonth;
+  BrokerModel profileData;
   DateTime now = DateTime.now();
   @override
   void initState() {
@@ -84,10 +90,15 @@ class _HomeState extends State<Home> {
 
 
   final size = MediaQuery.of(context).size;
+  final fontSize= size.height *0.02;
+  final titleFontSize= size.height *0.02;
+  final spaceVertical = size.height *0.01;
+  final fontWeight = FontWeight.bold;
  projectRetrieve.setBrokerId(brokerID);
 
     return Scaffold(
       appBar: CommonAppbar(
+          AppLocalizations.of(context).translate('Vrajraj')+' '+AppLocalizations.of(context).translate('Corporation'),
           Row(
             children: [
 
@@ -102,10 +113,60 @@ class _HomeState extends State<Home> {
                 ));
               }
               ),
-              IconButton(icon: Icon(Icons.exit_to_app), onPressed: ()async{
-                await LogInAndSignIn().signouts(brokerID);
-              }
-              ),
+              IconButton(icon: Icon(Icons.person), onPressed: (){
+                return    AwesomeDialog(
+                  context: context,
+
+                  dialogType: DialogType.INFO,
+                  animType: AnimType.BOTTOMSLIDE,
+                  title: 'Dialog Title',
+                  body:loading?CircularLoading():   Column(
+
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context).translate('BrokerName'),
+
+                        style: TextStyle(
+                            fontWeight: fontWeight,
+                            fontSize: titleFontSize
+                        ),
+                      ),
+                      SizedBox(height: spaceVertical,),
+                      Text(
+                        profileData.name,
+                        style: TextStyle(
+                            fontSize: fontSize
+                        ),
+                      ),
+                      SizedBox(height: spaceVertical,),
+                      Text(
+                        AppLocalizations.of(context).translate('MobileNumber'),
+                        style: TextStyle(
+                            fontWeight: fontWeight,
+                            fontSize: titleFontSize
+                        ),
+                      ),
+                      SizedBox(height: spaceVertical,),
+                      Text(
+                        profileData.number.toString(),
+                        style: TextStyle(
+                            fontSize: fontSize
+                        ),
+                      ),
+                      Text(
+                        profileData.alterNativeNumber.toString(),
+                        style: TextStyle(
+                            fontSize: fontSize
+                        ),
+                      ),
+                      SizedBox(height: spaceVertical,),
+                    ],
+                  ),
+                  // btnCancelOnPress: () {},
+                  // btnOkOnPress: () {},
+                )..show();
+              }),
             ],
           )
       ),
@@ -113,64 +174,147 @@ class _HomeState extends State<Home> {
           stream: projectRetrieve.BROKERDATAANDADVERTISE(),
           builder:(context,snapshot){
             if(snapshot.hasData){
+            profileData  = snapshot.data.brokerModel;
 
            //   findCurrentMonth(snapshot.data.commission,currentMonth);
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CarouselSlider.builder(
-                        options: CarouselOptions(
+              return Column(
+                children: [
+                  CarouselSlider.builder(
+                      options: CarouselOptions(
 
-                          // height: 400,
-                          aspectRatio: 16/9,
-                          viewportFraction: 0.8,
-                          initialPage: 0,
-                          enableInfiniteScroll: true,
-                          reverse: false,
-                          autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(milliseconds: 800),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          enlargeCenterPage: true,
+                        // height: 400,
+                        aspectRatio: 16/9,
+                        viewportFraction: 0.8,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 3),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
 
-                          scrollDirection: Axis.horizontal,
-                        ),
-                        itemCount: snapshot.data.advertiseList.length,
-                        itemBuilder: (BuildContext context,index){
-                          return Card(
-                            child: snapshot.data.advertiseList.length <=0?
-                             Image.asset('assets/defaultads.png')
-                            :Column(
-                              children: [
-                                Expanded(
-                                  child: Image.network(
-                                    snapshot.data.advertiseList[index].imageUrl.first,
-                                    width: size.width,
-                                    height:size.height *0.3 ,
-                                    fit:BoxFit.fill,
-
-
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      itemCount: snapshot.data.advertiseList.length,
+                      itemBuilder: (BuildContext context,index){
+                        return Card(
+                          child: snapshot.data.advertiseList.length <=0?
+                           Image.asset('assets/default.jpg')
+                          :GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, PageRouteBuilder(
+                                //    pageBuilder: (_,__,____) => BuildingStructure(),
+                                pageBuilder: (_, __, ___) => ImageZoom(
+                                    image: snapshot.data
+                                        .advertiseList[index].imageUrl),
+                                transitionDuration: Duration(
+                                    milliseconds: 0),
+                              ));
+                            },
+                            child: Card(
+                              child:
+                              Column(
+                                children: [
+                                  Expanded(
+                                    child: CachedNetworkImage(
+                                      imageUrl:  snapshot.data.advertiseList[index]
+                                          .imageUrl.first,
+                                      placeholder: (context, url) => Center(child: CircularLoading(),),
+                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                    ),
+                                    // Image.network(
+                                    //   snapshot.data.advertiseList[index]
+                                    //       .imageUrl.first,
+                                    //   width: size.width,
+                                    //   height: size.height * 0.3,
+                                    //   fit: BoxFit.fill,
+                                    //
+                                    //
+                                    // ),
                                   ),
-                                ),
-                                AutoSizeText(
-                                  snapshot.data.advertiseList[index].description,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: size.width*0.05
-                                  ),
-                                )
-                              ],
+                                  AutoSizeText(
+                                    snapshot.data.advertiseList[index]
+                                        .description,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: size.width * 0.05
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          );
-                        }
-                    ),
-                    SizedBox(height: size.height *0.01,),
-                  Text(brokerID),
-                    Text(AppLocalizations.of(context).translate('Language'))
+                          )
+                        );
+                      }
+                  ),
+                  SizedBox(height: spaceVertical,),
+                  Divider(),
+                  Column(
+                    children: [
+                      Text(
+                          AppLocalizations.of(context).translate('Total')+' '+AppLocalizations.of(context).translate('RemainingEMI'),
+                      style: TextStyle(
+                        fontSize: size.height*0.03,
+                        fontWeight: FontWeight.bold
+                      ),
 
-                  ],
-                ),
+                      ),
+                      SizedBox(height: spaceVertical,),
+                      Text(
+                        snapshot.data.brokerModel.totalRemainingEmi.toString(),
+                        style: TextStyle(
+                            fontSize: size.height*0.025,
+
+                        ),
+                      )
+                    ],
+                  ),
+                  Expanded(child: GridView.builder(
+                      itemCount: snapshot.data.brokerModel.remainingEmi.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: MediaQuery.of(context).size.width /
+                            (MediaQuery.of(context).size.height / 5),
+                      ),
+                      itemBuilder: (context,index){
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: CommonAssets.remainingAmountColor
+                              ),
+                            borderRadius: BorderRadius.circular(10.0)
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: size.height*0.005,horizontal: size.width*0.01),
+                            child: SingleChildScrollView(
+                              child: ListTile(
+                                onTap: ()async{
+                                  await projectRetrieve.setProjectName(snapshot.data.brokerModel.remainingEmi[index].projectName,);
+                                  await projectRetrieve.setPropertiesLoanRef(snapshot.data.brokerModel.remainingEmi[index].loanRef);
+                                  //  await _projectRetrieve.setPartOfSociety(widget.customerProperties[index]['Part'],widget.customerProperties[index]['PropertyNumber']);
+                                  Navigator.push(context, PageRouteBuilder(
+                                    pageBuilder: (_,__,___)=> LoanInfo(),
+                                    transitionDuration: Duration(milliseconds: 0),
+                                  ));
+                                },
+                                title: Text(snapshot.data.brokerModel.remainingEmi[index].projectName),
+                                subtitle: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(snapshot.data.brokerModel.remainingEmi[index].loanRef),
+                                    Text(snapshot.data.brokerModel.remainingEmi[index].pendingEmi.toString()),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),)
+
+                ],
               );
             }
             else if(snapshot.hasError){

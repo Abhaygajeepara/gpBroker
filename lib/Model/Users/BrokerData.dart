@@ -10,7 +10,8 @@ class  BrokerModel{
   bool isActiveUser;
   String password;
   List<Map<String,dynamic>> clients;
-  List remainingEmi;
+  List<RemainingEmiModel> remainingEmi;
+  int totalRemainingEmi;
   List<String> notificationKey;
   List<Map<String,dynamic>> closedBooking;
   int walletBalance;
@@ -24,6 +25,7 @@ class  BrokerModel{
     @required  this.isActiveUser,
     @required this.clients,
     @required this.remainingEmi,
+    @required this.totalRemainingEmi,
     @required this.notificationKey,
     @required this.closedBooking,
     @required this.walletBalance
@@ -31,6 +33,14 @@ class  BrokerModel{
   });
 
   factory BrokerModel.of(DocumentSnapshot snapshot ){
+    int totalRemainingEMI = 0;
+    List data = List.from(snapshot['RemainingEMI']);
+    List<RemainingEmiModel> remainingEMIList = [];
+    data.map((e)  {
+      RemainingEmiModel remainingEmiModel = RemainingEmiModel.of(e);
+      totalRemainingEMI = totalRemainingEMI +remainingEmiModel.pendingEmi;
+      remainingEMIList.add(remainingEmiModel);
+    }).toList();
     return BrokerModel(
         id: snapshot.data()['Id'],
         name: snapshot.data()['Name'],
@@ -39,7 +49,8 @@ class  BrokerModel{
         image: snapshot.data()['ProfileUrl'],
         isActiveUser: snapshot.data()['IsActive'],
         password: snapshot.data()['Password'],
-        remainingEmi:  List.from(snapshot.data()['RemainingEMI']),
+        remainingEmi:  remainingEMIList,
+        totalRemainingEmi: totalRemainingEMI,
         clients: List.from(snapshot.data()['ClientsList']),
         notificationKey: List.from(snapshot.data()['NotificationKey']),
         closedBooking: List.from(snapshot.data()['ClosedBooking']),
@@ -47,7 +58,19 @@ class  BrokerModel{
     );
   }
 }
-
+class RemainingEmiModel{
+  String projectName;
+  String loanRef;
+  int pendingEmi;
+  RemainingEmiModel({
+    @required this.projectName,
+    @required this.loanRef,
+    @required this.pendingEmi
+  });
+  factory RemainingEmiModel.of(Map<String,dynamic> data){
+    return RemainingEmiModel(projectName: data['ProjectName'], loanRef: data['LoanRef'], pendingEmi: data['TotalPendingEmi']);
+  }
+}
 // fields of database
 // "LoanId":loanId,
 // "Property":"${projectName}/${innerCollection}/${allocatedNumber}",

@@ -179,5 +179,13 @@
   "AddBroker": "Add Broker",
   "NoData": "No Data",
   "AllData": "All Data",
-  "Over": "Over"
+  "Over": "Over",
+  "Reason": "Reason",
+  "AllEMI": "All EMI",
+  "Delay": "Delay",
+  "Next": "Next",
+  "Previous": "Previous",
+  "EMI":"EMI",
+  "Vrajraj": "Vrajraj",
+  "Corporation": "Corporation"
 }

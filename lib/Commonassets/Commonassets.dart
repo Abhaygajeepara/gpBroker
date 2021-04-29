@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CommonAssets{
   //static Color AppbarColor =   Color(0xff73c5bc);
-//static Color AppbarColor =   Colors.black;
+static Color normalTextColor =   Colors.black;
   static Color AppbarTextColor = Colors.white;
   static Color buttonTextColor = Colors.white;
   static Color unSelectedTextColor = Colors.black;
@@ -36,7 +36,7 @@ class CommonAssets{
   static Color unSelectedItem = Colors.white;
   static Color receivedAmountColor  = Colors.green;
   static Color remainingAmountColor  = Colors.red;
-
+  static Color remainingEmiBoxBorderColors = Colors.grey.shade400;
 
 
 

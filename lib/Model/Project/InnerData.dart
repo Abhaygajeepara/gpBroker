@@ -13,7 +13,7 @@ class InnerData{
     List<int> soldLists = [];
       for(int i  =0;i<snapshot.docs.length;i++){
 
-          cusLists.add(BookingDataModel.of(snapshot.docs[i]));
+          cusLists.add(BookingDataModel.of(snapshot.docs[i],''));
           snapshot.docs[i]['IsLoanOn'] == true?soldLists.add(int.parse(snapshot.docs[i].id)):null;
       }
     return InnerData(
@@ -25,66 +25,71 @@ class InnerData{
 }
 
 class BookingDataModel{
-  String id;
+  //String id;
   Timestamp cusBookingDate;
   Timestamp loanStartingDate;
   Timestamp loanEndingDate;
-  String customerName;
+  // String customerName;
   bool isLoanOn;
   String loanReferenceCollectionName;
   String customerId;
   int brokerCommission;
   String brokerReference;
-  List<Map<String ,dynamic>> allCustomer;
+  //List<Map<String ,dynamic>> allCustomer;
   int squareFeet;
   int pricePerSquareFeet;
   int totalEMI;
   int perMonthEMI;
-
+  String part;
+  String propertiesNumber;
 
 
 
 
   BookingDataModel({
-   @required this.id,
+    //  @required this.id,
     @required  this.cusBookingDate,
     @required  this.loanStartingDate,
     @required this.loanEndingDate,
     @required  this.isLoanOn,
     @required  this.customerId,
-    @required this.customerName,
+    //@required this.customerName,
     @required  this.loanReferenceCollectionName,
     @required this.brokerReference,
-    @required this.allCustomer,
+    //@required this.allCustomer,
     @required this.brokerCommission,
     @required  this.squareFeet,
     @required this.pricePerSquareFeet,
     @required this.totalEMI,
-    @required this.perMonthEMI
+    @required this.perMonthEMI,
+    @required this.part,
+    @required this.propertiesNumber
 
   });
-  factory  BookingDataModel.of(DocumentSnapshot snap){
+  factory  BookingDataModel.of(DocumentSnapshot snap,String loanRef){
 
-      return  BookingDataModel(
-        id: snap.id.toString(),
-       cusBookingDate:snap['BookingDate'],
-       loanStartingDate: snap['StartDate'],
-       loanEndingDate: snap['LoanEndingDate'],
-       isLoanOn:snap['IsLoanOn'],
-        customerId: snap['CustomerId'],
-        customerName: snap['CustomerName'],
-        loanReferenceCollectionName:snap['LoanReferenceCollection'],
-          brokerReference:snap['BrokerReference'],
-        allCustomer: List.from(snap['AllCustomer']),
+    return  BookingDataModel(
+      //  id: snap.id.toString(),
+        cusBookingDate:snap['BookingDate'],
+        loanStartingDate: snap['LoanStartingDate'],
+        loanEndingDate: snap['LoanEndingDate'],
+        isLoanOn:snap['LoanOn'],
+        customerId: snap['CustomerId'].toString(),
+        //customerName: snap['CustomerName'],
+        loanReferenceCollectionName:loanRef,
+        brokerReference:snap['BrokerReference'],
+        //allCustomer: List.from(snap['AllCustomer']),
         brokerCommission: snap['BrokerCommission'],
         squareFeet:snap['SquareFeet'],
         pricePerSquareFeet:snap['PricePerSquareFeet'],
         perMonthEMI: snap['PerMonthEMI'],
         totalEMI: snap['EMIDuration'],
+        propertiesNumber: snap['PropertiesNumber'],
+        part: snap['Part']
 
 
 
-      );
+    );
   }
 
 }

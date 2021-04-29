@@ -59,7 +59,9 @@ class _MonthlyBrokerIncomeState extends State<MonthlyBrokerIncome> {
     final fontSize = size.height *0.02;
 
     return Scaffold(
-      appBar: CommonAppbar(Container()),
+      appBar: CommonAppbar(
+          AppLocalizations.of(context).translate('Income'),
+          Container()),
       body: Padding(
           padding: EdgeInsets.symmetric(horizontal:size.width *0.01,vertical: size.height *0.01 ),
         child: ListView.builder(

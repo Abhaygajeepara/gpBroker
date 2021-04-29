@@ -151,8 +151,10 @@ class _BrokerCommissionState extends State<BrokerCommission> {
       );
     }
     final size = MediaQuery.of(context).size;
+    final dividerheight = size.height*0.01;
     return Scaffold(
       appBar: CommonAppbar(
+        AppLocalizations.of(context).translate('Income'),
           IconButton(icon: Icon(Icons.date_range), onPressed: (){
             selectDate();
           })),
@@ -185,86 +187,104 @@ class _BrokerCommissionState extends State<BrokerCommission> {
 
                           });
                         },
-                        child: Column(
-                          children: [
-                            Container(
-                              height: size.height*0.07,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data.length,
-                                  itemBuilder: (context,index){
-                                    return Container(
-                                        width: size.width/3,
-                                        child: GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              projectIndex = index;
-                                            });
-                                          },
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                    color: projectIndex==index?CommonAssets.selectedBorderColors:CommonAssets.unselectedBorderColors
+                        child: Padding(
+                          padding:  EdgeInsets.fromLTRB(0,size.height*0.01,0,0 ),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: size.height*0.07,
+                                // decoration: BoxDecoration(
+                                //   boxShadow: [
+                                //     BoxShadow(
+                                //       color: Colors.white,
+                                //       offset: Offset(0.0, 1.0), //(x,y)
+                                //       blurRadius: 1.0,
+                                //     ),
+                                //   ],
+                                // ),
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context,index){
+                                      return GestureDetector(
+                                        onTap: (){
+                                          setState(() {
+                                            projectIndex = index;
+                                          });
+                                        },
+                                        child: Container(
+                                            width: size.width/3,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color:projectIndex!=index? Colors.transparent:Theme.of(context).primaryColor,
                                                 ),
-                                                borderRadius: BorderRadius.circular(20.0)
+
+
+                                              ),
 
                                             ),
-                                            color: projectIndex==index?Theme.of(context).primaryColor:CommonAssets.unSelectedItem,
                                             child: Center(child: Text(snapshot.data[index].projectName,
                                               style: TextStyle(
-                                                  color:projectIndex==index? CommonAssets.buttonTextColor:CommonAssets.unSelectedTextColor,
+                                                  color:projectIndex!=index? CommonAssets.normalTextColor:Theme.of(context).primaryColor,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: size.height*0.02
                                               ),
                                             ),
-                                            ),),
-                                        ));
-                                  }),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                //border: Border.all(color: CommonAssets.boxBorderColors)
+                                            )),
+                                      );
+                                    }),
                               ),
-                              height:  size.height*0.07,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: subScroll.length,
-                                  itemBuilder: (context,index){
-                                    return Container(
-                                        width: size.width/3,
-                                        child: GestureDetector(
-                                          onTap: (){
-                                            setState(() {
+                              Divider(height: dividerheight,),
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: size.height*0.01,horizontal: size.width*0.01),
+                                // decoration: BoxDecoration(
+                                //   boxShadow: [
+                                //     BoxShadow(
+                                //       color: Colors.white,
+                                //       offset: Offset(0.0, 1.0), //(x,y)
+                                //       blurRadius: 1.0,
+                                //     ),
+                                //   ],
+                                // ),
+                                height:  size.height*0.07,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: subScroll.length,
+                                    itemBuilder: (context,index){
+                                      return GestureDetector(
+                                        onTap: (){
+                                          setState(() {
 
-                                              subIndex = index;
-                                            });
-                                          },
-
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                    color: subIndex!=index?CommonAssets.selectedBorderColors:CommonAssets.unselectedBorderColors
-                                                ),
-                                                borderRadius: BorderRadius.circular(20.0)
-
+                                            subIndex = index;
+                                          });
+                                        },
+                                        child: Container(
+                                            width: size.width/3,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: subIndex!=index? Colors.transparent:Theme.of(context).primaryColor,
+                                                )
+                                              )
                                             ),
-                                            color: subIndex!=index?Theme.of(context).primaryColor:CommonAssets.unSelectedItem,
                                             child: Center(child: Text(subScroll[index],
                                               style: TextStyle(
-                                                  color:subIndex!=index? CommonAssets.buttonTextColor:CommonAssets.unSelectedTextColor,
+                                                  color:subIndex!=index? CommonAssets.normalTextColor:Theme.of(context).primaryColor,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: size.height*0.02
                                               ),
                                             ),
-                                            ),),
-                                        ));
-                                  }),
-                            ),
-                            Expanded(
-                                child: redirectWidget(snapshot.data[projectIndex],_projectRetrieve,context)
-                            )
-                          ],
+                                            )),
+                                      );
+                                    }),
+                              ),
+                              Divider(height: dividerheight,),
+                              Expanded(
+                                  child: redirectWidget(snapshot.data[projectIndex],_projectRetrieve,context)
+                              )
+                            ],
+                          ),
                         ),
                       );
                     }
@@ -465,6 +485,8 @@ class _BrokerCommissionState extends State<BrokerCommission> {
       bool isPaidEmiData,ProjectRetrieve _projectRetrieve,String projectName){
     Color amountTextColor = isPaidEmiData?CommonAssets.receivedAmountColor:CommonAssets.remainingAmountColor;
     singlePropertiesLoanInfo.sort((a,b)=>a.installmentDate.compareTo(b.installmentDate));
+    final size =MediaQuery.of(context).size;
+    final labelFontSize = size.height*0.02;
     return ListView.builder(
         itemCount: singlePropertiesLoanInfo.length,
         itemBuilder: (context,index){
@@ -476,7 +498,7 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                   await _projectRetrieve.setPropertiesLoanRef(singlePropertiesLoanInfo[index].loanId);
                   Navigator.push(context, PageRouteBuilder(
                     //    pageBuilder: (_,__,____) => BuildingStructure(),
-                    pageBuilder: (_,__,___)=> SingleLoan(),
+                    pageBuilder: (_,__,___)=> LoanInfo(),
                     transitionDuration: Duration(milliseconds: 0),
                   ));
                 },
@@ -494,21 +516,22 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                   ],
                 ),
                 subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(AppLocalizations.of(context).translate('LoanId')),
-                        Text(singlePropertiesLoanInfo[index].loanId.toString()),
-                      ],
+                    Text(AppLocalizations.of(context).translate('LoanId'),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: labelFontSize
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(AppLocalizations.of(context).translate('EMIDate')),
-                        Text(singlePropertiesLoanInfo[index].installmentDate.toDate().toString().substring(0,16)),
-                      ],
                     ),
+                    Text(singlePropertiesLoanInfo[index].loanId.toString()),
+                    Text(AppLocalizations.of(context).translate('EMIDate'),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: labelFontSize
+                      ),),
+                    Text(singlePropertiesLoanInfo[index].installmentDate.toDate().toString().substring(0,16)),
+
                     isPaidEmiData?  Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

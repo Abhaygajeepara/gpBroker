@@ -5,8 +5,10 @@ import 'package:gpgroup/Model/Advertise/AdvertiseMode.dart';
 import 'package:gpgroup/Model/AppVersion/Version.dart';
 import 'package:gpgroup/Model/Income/Income.dart';
 import 'package:gpgroup/Model/Loan/LoanInfo.dart';
+import 'package:gpgroup/Model/Project/InnerData.dart';
 import 'package:gpgroup/Model/Project/ProjectDetails.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
+import 'package:gpgroup/Model/Users/CustomerModel.dart';
 import 'package:gpgroup/Model/Wallet/BrokerWallet.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -164,6 +166,17 @@ class ProjectRetrieve{
   Stream<BrokerWalletAndProfile> BROKERWALLETANDPROFILE(){
     return Rx.combineLatest2(BROKERWALLETTRANSCATION, SINGLEBROKERDATA, (List<BrokerWalletModel> brokerWalletModel,BrokerModel brokerModel) {
       return BrokerWalletAndProfile(brokerWalletModel: brokerWalletModel, brokerModel: brokerModel);
+    } );
+  }
+  Stream<BookingDataModel> get CUSTOMERSINGLEPROPETIES{
+    return loanReference.doc(projectName).collection(loadId).doc('BasicDetails').snapshots().map(_bookingDataModel);
+  }
+  BookingDataModel _bookingDataModel(DocumentSnapshot snapshot){
+    return  BookingDataModel.of(snapshot,loadId);
+  }
+  Stream<BookingAndLoan> BOOKINGANDLOAN(){
+    return Rx.combineLatest2(CUSTOMERSINGLEPROPETIES, LOANINFO, (BookingDataModel bookingDataModel, List<SinglePropertiesLoanInfo> loanData) {
+      return BookingAndLoan(bookingData: bookingDataModel, loanData : loanData);
     } );
   }
 }

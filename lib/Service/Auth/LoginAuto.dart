@@ -65,12 +65,13 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 Future signouts(String brokerID)async{
     try{
+      await _auth.signOut();
       String notificationToken = await _firebaseMessaging.getToken();
       print('notificationToken=${notificationToken}');
       await FirebaseFirestore.instance.collection('Broker').doc(brokerID).update({
         "NotificationKey":FieldValue.arrayRemove([notificationToken]),
       });
-      await _auth.signOut();
+
     }
     catch(e){
       print(e.toString());

@@ -38,7 +38,7 @@ class _BrokerClientsState extends State<BrokerClients> {
   int selectedProjectIndex =0;
   List<Map<String,dynamic>> demoLoanRef =[];
   BrokerModel brokerModel;
-
+bool loading = true;
 
   projectWishData()async{
     activeProjectsList =[];
@@ -109,9 +109,11 @@ class _BrokerClientsState extends State<BrokerClients> {
     await  ProjectRetrieve().checkBrokercommission(demoLoanRef);
    await projectWishData();
     await allocate();
-    setState(() {
-
-    });
+    if(mounted){
+      setState(() {
+        loading = false;
+      });
+    }
 
   }
   @override
@@ -153,13 +155,15 @@ class _BrokerClientsState extends State<BrokerClients> {
     }
 
     return Scaffold(
-        appBar: CommonAppbar(Container()),
+        appBar: CommonAppbar(
+            AppLocalizations.of(context).translate('Clients'),
+            Container()),
         body:StreamBuilder<BrokerModel>(
             stream: _projectRetrieve.SINGLEBROKERDATA,
             builder: (context,brokerSnapshot){
               if(brokerSnapshot.hasData){
                 assignData(brokerSnapshot.data);
-                return Padding(
+                return loading?CircularLoading(): Padding(
                   padding:  EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
                   child: Column(
                     children: [
@@ -338,7 +342,7 @@ class _BrokerClientsState extends State<BrokerClients> {
                                       return    Navigator.push(
                                         context,
                                         PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) => SingleLoan(),
+                                          pageBuilder: (_, __, ___) => LoanInfo(),
                                           transitionDuration: Duration(seconds: 0),
                                         ),
                                       );
