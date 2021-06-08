@@ -198,54 +198,52 @@ class _HomeState extends State<Home> {
                       ),
                       itemCount: snapshot.data.advertiseList.length,
                       itemBuilder: (BuildContext context,index){
-                        return Card(
-                          child: snapshot.data.advertiseList.length <=0?
-                           Image.asset('assets/default.jpg')
-                          :GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, PageRouteBuilder(
-                                //    pageBuilder: (_,__,____) => BuildingStructure(),
-                                pageBuilder: (_, __, ___) => ImageZoom(
-                                    image: snapshot.data
-                                        .advertiseList[index].imageUrl),
-                                transitionDuration: Duration(
-                                    milliseconds: 0),
-                              ));
-                            },
-                            child: Card(
-                              child:
-                              Column(
-                                children: [
-                                  Expanded(
-                                    child: CachedNetworkImage(
-                                      imageUrl:  snapshot.data.advertiseList[index]
-                                          .imageUrl.first,
-                                      placeholder: (context, url) => Center(child: CircularLoading(),),
-                                      errorWidget: (context, url, error) => Icon(Icons.error),
-                                    ),
-                                    // Image.network(
-                                    //   snapshot.data.advertiseList[index]
-                                    //       .imageUrl.first,
-                                    //   width: size.width,
-                                    //   height: size.height * 0.3,
-                                    //   fit: BoxFit.fill,
-                                    //
-                                    //
-                                    // ),
+                        return snapshot.data.advertiseList.length <=0?
+                         Image.asset('assets/default.jpg')
+                        :GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, PageRouteBuilder(
+                              //    pageBuilder: (_,__,____) => BuildingStructure(),
+                              pageBuilder: (_, __, ___) => ImageZoom(
+                                  image: snapshot.data
+                                      .advertiseList[index].imageUrl),
+                              transitionDuration: Duration(
+                                  milliseconds: 0),
+                            ));
+                          },
+                          child: Card(
+                            child:
+                            Column(
+                              children: [
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl:  snapshot.data.advertiseList[index]
+                                        .imageUrl.first,
+                                    placeholder: (context, url) => Center(child: CircularLoading(),),
+                                    errorWidget: (context, url, error) => Icon(Icons.error),
                                   ),
-                                  AutoSizeText(
-                                    snapshot.data.advertiseList[index]
-                                        .description,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: size.width * 0.05
-                                    ),
-                                  )
-                                ],
-                              ),
+                                  // Image.network(
+                                  //   snapshot.data.advertiseList[index]
+                                  //       .imageUrl.first,
+                                  //   width: size.width,
+                                  //   height: size.height * 0.3,
+                                  //   fit: BoxFit.fill,
+                                  //
+                                  //
+                                  // ),
+                                ),
+                                AutoSizeText(
+                                  snapshot.data.advertiseList[index]
+                                      .description,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: size.width * 0.05
+                                  ),
+                                )
+                              ],
                             ),
-                          )
+                          ),
                         );
                       }
                   ),
@@ -291,9 +289,14 @@ class _HomeState extends State<Home> {
                             child: SingleChildScrollView(
                               child: ListTile(
                                 onTap: ()async{
-                                  await projectRetrieve.setProjectName(snapshot.data.brokerModel.remainingEmi[index].projectName,);
+                                  int spalsh  =  snapshot.data.brokerModel.remainingEmi[index].projectName.indexOf("/");
+
+                                  String _project =snapshot.data.brokerModel.remainingEmi[index].projectName.substring(0,spalsh);
+
+                                  await projectRetrieve.setProjectName(_project,);
                                   await projectRetrieve.setPropertiesLoanRef(snapshot.data.brokerModel.remainingEmi[index].loanRef);
-                                  //  await _projectRetrieve.setPartOfSociety(widget.customerProperties[index]['Part'],widget.customerProperties[index]['PropertyNumber']);
+                                 //  await _projectRetrieve.setPartOfSociety(widget.customerProperties[index]['Part'],widget.customerProperties[index]['PropertyNumber']);
+
                                   Navigator.push(context, PageRouteBuilder(
                                     pageBuilder: (_,__,___)=> LoanInfo(),
                                     transitionDuration: Duration(milliseconds: 0),

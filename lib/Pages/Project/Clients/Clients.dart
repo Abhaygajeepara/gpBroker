@@ -25,8 +25,8 @@ class BrokerClients extends StatefulWidget {
 class _BrokerClientsState extends State<BrokerClients> {
 
   int number ;
-  bool isSearch = false;
-  bool isSearchByName = false;
+  // bool isSearch = false;
+  // bool isSearchByName = false;
   String customerName;
   bool cancelCustomer = false;
   List<Map<String,dynamic>> dataOfClient =[];
@@ -136,23 +136,23 @@ bool loading = true;
     final spaceVertical = size.height*0.01;
     final projectRetrieve = Provider.of<ProjectRetrieve>(context);
     //  projectRetrieve.setBroker('Mutant');
-    searchFind(){
-      print(isSearch);
-      searchList = [];
-      for(int i=0;i<dataOfClient.length;i++){
-        if(isSearchByName ){
-          if(dataOfClient[i].containsValue(customerName)){
-            searchList.add(dataOfClient[i]);
-          }
-        }
-        else{
-          if(dataOfClient[i].containsValue(number)){
-            searchList.add(dataOfClient[i]);
-          }
-        }
-
-      }
-    }
+    // searchFind(){
+    //   print(isSearch);
+    //   searchList = [];
+    //   for(int i=0;i<dataOfClient.length;i++){
+    //     if(isSearchByName ){
+    //       if(dataOfClient[i].containsValue(customerName)){
+    //         searchList.add(dataOfClient[i]);
+    //       }
+    //     }
+    //     else{
+    //       if(dataOfClient[i].containsValue(number)){
+    //         searchList.add(dataOfClient[i]);
+    //       }
+    //     }
+    //
+    //   }
+    // }
 
     return Scaffold(
         appBar: CommonAppbar(
@@ -165,114 +165,136 @@ bool loading = true;
                 assignData(brokerSnapshot.data);
                 return loading?CircularLoading(): Padding(
                   padding:  EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
-                  child: Column(
+                  child:
+
+                  Column(
                     children: [
 
-                      isSearchByName ? TextFormField(
+                      // isSearchByName ? TextFormField(
+                      //
+                      //   onChanged: (val){
+                      //     if(val.isEmpty){
+                      //       setState(() {
+                      //         isSearch = false;
+                      //       });
+                      //     }
+                      //     setState(() {
+                      //       customerName = val;
+                      //     });
+                      //   },
+                      //
+                      //   decoration: commoninputdecoration.copyWith(
+                      //       labelText: AppLocalizations.of(context).translate('Search'),
+                      //       suffixIcon: isSearch?IconButton(icon: Icon(Icons.close), onPressed: (){
+                      //         setState(() {
+                      //           isSearch = false;
+                      //
+                      //         });
+                      //       }):
+                      //
+                      //       IconButton(icon: Icon(Icons.search), onPressed: (){
+                      //         setState(() {
+                      //           isSearch = true;
+                      //           searchFind();
+                      //         });
+                      //       })
+                      //   ),
+                      //
+                      // ):TextFormField(
+                      //   maxLength: 10,
+                      //   onChanged: (val){
+                      //     if(val.isEmpty){
+                      //       setState(() {
+                      //         isSearch = false;
+                      //       });
+                      //     }
+                      //     setState(() {
+                      //       number = int.parse(val);
+                      //     });
+                      //   },
+                      //   decoration: commoninputdecoration.copyWith(
+                      //       labelText: AppLocalizations.of(context).translate('Search'),
+                      //       suffixIcon: isSearch?IconButton(icon: Icon(Icons.close), onPressed: (){
+                      //         setState(() {
+                      //           isSearch = false;
+                      //
+                      //         });
+                      //       }):
+                      //
+                      //       IconButton(icon: Icon(Icons.search), onPressed: (){
+                      //         setState(() {
+                      //           isSearch = true;
+                      //           searchFind();
+                      //         });
+                      //       })
+                      //   ),
+                      //
+                      // ),
+                      // SizedBox(height: spaceVertical,),
+                      // Row(
+                      //   children: [
+                      //     Row(
+                      //       children: [
+                      //         Switch(value: cancelCustomer, onChanged: (val){
+                      //           setState(() {
+                      //             cancelCustomer = val;
+                      //             selectedProjectIndex=0;
+                      //             allocate();
+                      //
+                      //           });
+                      //         }),
+                      //
+                      //         Text(
+                      //
+                      //           AppLocalizations.of(context).translate('CancelBooking'),
+                      //           style: TextStyle(
+                      //             fontSize: fontSize,
+                      //           ),
+                      //         )
+                      //       ],
+                      //     ),
+                      //
+                      //
+                      //     Row(
+                      //       children: [
+                      //         Switch(value: isSearchByName, onChanged: (val){
+                      //           setState(() {
+                      //             isSearchByName = val;
+                      //           });
+                      //         }),
+                      //         Text(
+                      //           AppLocalizations.of(context).translate('SearchByName'),
+                      //           style: TextStyle(
+                      //             fontSize: fontSize,
+                      //           ),
+                      //         )
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
 
-                        onChanged: (val){
-                          if(val.isEmpty){
-                            setState(() {
-                              isSearch = false;
-                            });
-                          }
-                          setState(() {
-                            customerName = val;
-                          });
-                        },
 
-                        decoration: commoninputdecoration.copyWith(
-                            labelText: AppLocalizations.of(context).translate('Search'),
-                            suffixIcon: isSearch?IconButton(icon: Icon(Icons.close), onPressed: (){
-                              setState(() {
-                                isSearch = false;
-
-                              });
-                            }):
-
-                            IconButton(icon: Icon(Icons.search), onPressed: (){
-                              setState(() {
-                                isSearch = true;
-                                searchFind();
-                              });
-                            })
-                        ),
-
-                      ):TextFormField(
-                        maxLength: 10,
-                        onChanged: (val){
-                          if(val.isEmpty){
-                            setState(() {
-                              isSearch = false;
-                            });
-                          }
-                          setState(() {
-                            number = int.parse(val);
-                          });
-                        },
-                        decoration: commoninputdecoration.copyWith(
-                            labelText: AppLocalizations.of(context).translate('Search'),
-                            suffixIcon: isSearch?IconButton(icon: Icon(Icons.close), onPressed: (){
-                              setState(() {
-                                isSearch = false;
-
-                              });
-                            }):
-
-                            IconButton(icon: Icon(Icons.search), onPressed: (){
-                              setState(() {
-                                isSearch = true;
-                                searchFind();
-                              });
-                            })
-                        ),
-
-                      ),
-                      SizedBox(height: spaceVertical,),
-                      Row(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Row(
-                            children: [
-                              Switch(value: cancelCustomer, onChanged: (val){
-                                setState(() {
-                                  cancelCustomer = val;
-                                  selectedProjectIndex=0;
-                                  allocate();
+                          Switch(value: cancelCustomer, onChanged: (val){
+                            setState(() {
+                              cancelCustomer = val;
+                              selectedProjectIndex=0;
+                              allocate();
 
-                                });
-                              }),
+                            });
+                          }),
 
-                              Text(
+                          Text(
 
-                                AppLocalizations.of(context).translate('CancelBooking'),
-                                style: TextStyle(
-                                  fontSize: fontSize,
-                                ),
-                              )
-                            ],
-                          ),
-
-
-                          Row(
-                            children: [
-                              Switch(value: isSearchByName, onChanged: (val){
-                                setState(() {
-                                  isSearchByName = val;
-                                });
-                              }),
-                              Text(
-                                AppLocalizations.of(context).translate('SearchByName'),
-                                style: TextStyle(
-                                  fontSize: fontSize,
-                                ),
-                              )
-                            ],
-                          ),
+                            AppLocalizations.of(context).translate('CancelBooking'),
+                            style: TextStyle(
+                              fontSize: fontSize,
+                            ),
+                          )
                         ],
                       ),
-
-
-                      SizedBox(height: spaceVertical,),
                       Container(
                         height: size.height*0.06,
                         child: ListView.builder(
@@ -315,25 +337,12 @@ bool loading = true;
 
 
 
-                      Expanded(
-                          child:isSearch?ListView.builder(
-                              itemCount: searchList.length,
-                              itemBuilder: (context,index){
-                                return Card(
-                                  child: ListTile(
-                                    title: Text("${searchList[index]['LoanRef']} (${searchList[index]['CustomerName']})"),
-                                    subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(searchList[index]['ProjectName']),
-                                        Text(searchList[index]['PhoneNumber'].toString())
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }):ListView.builder(
+                      Container(
+                        height: size.height*0.5,
+                          child:ListView.builder(
                               itemCount: dataOfClient.length,
                               itemBuilder: (context,index){
+
                                 return Card(
                                   child: ListTile(
                                     onTap: ()async{
