@@ -90,9 +90,7 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
 
-    return MaterialApp(
-      home: Scaffold(
-        body: StreamBuilder<ConnectivityStatus>(
+    return StreamBuilder<ConnectivityStatus>(
         stream: connectionProvider.CONNECTIONSTREAM,
         builder: (context,connectionSnapshot){
           if(connectionSnapshot.data == ConnectivityStatus.Cellular
@@ -178,21 +176,19 @@ class _MyAppState extends State<MyApp> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Image.asset('assets/NoInterNet.png'),
-            AutoSizeText(
+                AutoSizeText(
 
-            "No Internet Connection Found",
-              maxLines: 4,
-              style: TextStyle(
-                  fontSize: 25,
+                  "No Internet Connection Found",
+                  maxLines: 4,
+                  style: TextStyle(
+                    fontSize: 25,
 
-              ),
-            )
+                  ),
+                )
               ],
             );
           }
-        }),
-      ),
-    );
+        });
 
 
   }

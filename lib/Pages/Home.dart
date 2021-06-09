@@ -14,6 +14,7 @@ import 'package:gpgroup/Model/Project/ProjectDetails.dart';
 
 import 'package:gpgroup/Model/User.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
+import 'package:gpgroup/Pages/Ad/SingleAds.dart';
 import 'package:gpgroup/Pages/Project/Loan/SingleLoan.dart';
 import 'package:gpgroup/Pages/Project/Wallet/Wallet.dart';
 import 'package:gpgroup/Pages/Project/ZoomImage.dart';
@@ -202,47 +203,54 @@ class _HomeState extends State<Home> {
                          Image.asset('assets/default.jpg')
                         :GestureDetector(
                           onTap: () {
+                            projectRetrieve.setAds(snapshot.data.advertiseList[index].id);
                             Navigator.push(context, PageRouteBuilder(
                               //    pageBuilder: (_,__,____) => BuildingStructure(),
-                              pageBuilder: (_, __, ___) => ImageZoom(
-                                  image: snapshot.data
-                                      .advertiseList[index].imageUrl),
+                              pageBuilder: (_, __, ___) => SingleAds(
+                              ),
                               transitionDuration: Duration(
                                   milliseconds: 0),
                             ));
+                            // Navigator.push(context, PageRouteBuilder(
+                            //   //    pageBuilder: (_,__,____) => BuildingStructure(),
+                            //   pageBuilder: (_, __, ___) => ImageZoom(
+                            //       image: snapshot.data
+                            //           .advertiseList[index].imageUrl),
+                            //   transitionDuration: Duration(
+                            //       milliseconds: 0),
+                            // ));
                           },
-                          child: Card(
-                            child:
-                            Column(
-                              children: [
-                                Expanded(
-                                  child: CachedNetworkImage(
-                                    imageUrl:  snapshot.data.advertiseList[index]
-                                        .imageUrl.first,
-                                    placeholder: (context, url) => Center(child: CircularLoading(),),
-                                    errorWidget: (context, url, error) => Icon(Icons.error),
-                                  ),
-                                  // Image.network(
-                                  //   snapshot.data.advertiseList[index]
-                                  //       .imageUrl.first,
-                                  //   width: size.width,
-                                  //   height: size.height * 0.3,
-                                  //   fit: BoxFit.fill,
-                                  //
-                                  //
-                                  // ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: CachedNetworkImage(
+                                  imageUrl:  snapshot.data.advertiseList[index]
+                                      .imageUrl.first,
+                                  placeholder: (context, url) => Center(child: CircularLoading(),),
+                                  errorWidget: (context, url, error) => Icon(Icons.error),
+
                                 ),
-                                AutoSizeText(
-                                  snapshot.data.advertiseList[index]
-                                      .description,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: size.width * 0.05
-                                  ),
-                                )
-                              ],
-                            ),
+                                // Image.network(
+                                //   snapshot.data.advertiseList[index]
+                                //       .imageUrl.first,
+                                //   width: size.width,
+                                //   height: size.height * 0.3,
+                                //   fit: BoxFit.fill,
+                                //
+                                //
+                                // ),
+                              ),
+                              AutoSizeText(
+                                snapshot.data.advertiseList[index]
+                                    .description,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: size.width * 0.05
+                                ),
+                              )
+                            ],
                           ),
                         );
                       }

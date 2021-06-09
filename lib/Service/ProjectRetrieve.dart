@@ -18,6 +18,10 @@ class ProjectRetrieve{
   String loadId;
   String projectName;
   int recordLimits ;
+  String adsId;
+  setAds(String  ad){
+    this.adsId = ad;
+  }
   setBrokerId(String id){
     this.brokerId = id;
   }
@@ -178,5 +182,13 @@ class ProjectRetrieve{
     return Rx.combineLatest2(CUSTOMERSINGLEPROPETIES, LOANINFO, (BookingDataModel bookingDataModel, List<SinglePropertiesLoanInfo> loanData) {
       return BookingAndLoan(bookingData: bookingDataModel, loanData : loanData);
     } );
+  }
+
+  AdvertiseModel _advertiseSingle(DocumentSnapshot snapshot){
+    return AdvertiseModel.of(snapshot);
+
+  }
+  Stream<AdvertiseModel> get SINGLEADVERTISE{
+    return adsReference.doc(adsId).snapshots().map(_advertiseSingle);
   }
 }

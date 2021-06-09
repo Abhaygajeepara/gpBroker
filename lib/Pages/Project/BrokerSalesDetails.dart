@@ -87,7 +87,8 @@ class _BrokerCommissionState extends State<BrokerCommission> {
   }
   @override
   Widget build(BuildContext context) {
-
+    final size = MediaQuery.of(context).size;
+    final dividerheight = size.height*0.01;
     final _projectRetrieve = Provider.of<ProjectRetrieve>(context);
 
     List<String> subScroll = [
@@ -96,8 +97,8 @@ class _BrokerCommissionState extends State<BrokerCommission> {
       AppLocalizations.of(context).translate('PaidEMI'),
 
     ];
-    Widget selectDate(){
-      final size = MediaQuery.of(context).size;
+     selectDate(BuildContext context){
+
 
       showDialog(
           context: context,
@@ -150,13 +151,12 @@ class _BrokerCommissionState extends State<BrokerCommission> {
           }
       );
     }
-    final size = MediaQuery.of(context).size;
-    final dividerheight = size.height*0.01;
+
     return Scaffold(
       appBar: CommonAppbar(
         AppLocalizations.of(context).translate('Income'),
           IconButton(icon: Icon(Icons.date_range), onPressed: (){
-            selectDate();
+            selectDate(context);
           })),
       body: StreamBuilder<BrokerModel>(
           stream: _projectRetrieve.SINGLEBROKERDATA,

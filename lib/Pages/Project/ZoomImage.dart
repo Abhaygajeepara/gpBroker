@@ -64,7 +64,7 @@ class _ImageZoomState extends State<ImageZoom> {
             }),
           ),
           VerticalDivider(
-            color: CommonAssets.normalTextColor,
+            color: Theme.of(context).primaryColor,
             thickness: 2,
           ),
           Expanded(
@@ -73,11 +73,11 @@ class _ImageZoomState extends State<ImageZoom> {
               initZoom: 0.0,
               width: size.width*4,
               height: size.height*4,
-              child: Image.network(
-               selectedUrl,
-
-                // fit:BoxFit.cover,
-
+              child:
+              CachedNetworkImage(
+                imageUrl:  selectedUrl,
+                placeholder: (context, url) => Center(child: CircularLoading(),),
+                errorWidget: (context, url, error) => Icon(Icons.error),
 
               ),
             ),

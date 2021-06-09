@@ -39,6 +39,7 @@ class _BrokerClientsState extends State<BrokerClients> {
   List<Map<String,dynamic>> demoLoanRef =[];
   BrokerModel brokerModel;
 bool loading = true;
+bool subLoading = true;
 
   projectWishData()async{
     activeProjectsList =[];
@@ -89,6 +90,7 @@ bool loading = true;
     allClosedClients.insert(0, localCancelClients);
 
     dataOfClient=allActiveClients[selectedProjectIndex];
+
   }
 
   allocate(){
@@ -112,6 +114,8 @@ bool loading = true;
     if(mounted){
       setState(() {
         loading = false;
+        subLoading= false;
+
       });
     }
 
@@ -170,108 +174,6 @@ bool loading = true;
                   Column(
                     children: [
 
-                      // isSearchByName ? TextFormField(
-                      //
-                      //   onChanged: (val){
-                      //     if(val.isEmpty){
-                      //       setState(() {
-                      //         isSearch = false;
-                      //       });
-                      //     }
-                      //     setState(() {
-                      //       customerName = val;
-                      //     });
-                      //   },
-                      //
-                      //   decoration: commoninputdecoration.copyWith(
-                      //       labelText: AppLocalizations.of(context).translate('Search'),
-                      //       suffixIcon: isSearch?IconButton(icon: Icon(Icons.close), onPressed: (){
-                      //         setState(() {
-                      //           isSearch = false;
-                      //
-                      //         });
-                      //       }):
-                      //
-                      //       IconButton(icon: Icon(Icons.search), onPressed: (){
-                      //         setState(() {
-                      //           isSearch = true;
-                      //           searchFind();
-                      //         });
-                      //       })
-                      //   ),
-                      //
-                      // ):TextFormField(
-                      //   maxLength: 10,
-                      //   onChanged: (val){
-                      //     if(val.isEmpty){
-                      //       setState(() {
-                      //         isSearch = false;
-                      //       });
-                      //     }
-                      //     setState(() {
-                      //       number = int.parse(val);
-                      //     });
-                      //   },
-                      //   decoration: commoninputdecoration.copyWith(
-                      //       labelText: AppLocalizations.of(context).translate('Search'),
-                      //       suffixIcon: isSearch?IconButton(icon: Icon(Icons.close), onPressed: (){
-                      //         setState(() {
-                      //           isSearch = false;
-                      //
-                      //         });
-                      //       }):
-                      //
-                      //       IconButton(icon: Icon(Icons.search), onPressed: (){
-                      //         setState(() {
-                      //           isSearch = true;
-                      //           searchFind();
-                      //         });
-                      //       })
-                      //   ),
-                      //
-                      // ),
-                      // SizedBox(height: spaceVertical,),
-                      // Row(
-                      //   children: [
-                      //     Row(
-                      //       children: [
-                      //         Switch(value: cancelCustomer, onChanged: (val){
-                      //           setState(() {
-                      //             cancelCustomer = val;
-                      //             selectedProjectIndex=0;
-                      //             allocate();
-                      //
-                      //           });
-                      //         }),
-                      //
-                      //         Text(
-                      //
-                      //           AppLocalizations.of(context).translate('CancelBooking'),
-                      //           style: TextStyle(
-                      //             fontSize: fontSize,
-                      //           ),
-                      //         )
-                      //       ],
-                      //     ),
-                      //
-                      //
-                      //     Row(
-                      //       children: [
-                      //         Switch(value: isSearchByName, onChanged: (val){
-                      //           setState(() {
-                      //             isSearchByName = val;
-                      //           });
-                      //         }),
-                      //         Text(
-                      //           AppLocalizations.of(context).translate('SearchByName'),
-                      //           style: TextStyle(
-                      //             fontSize: fontSize,
-                      //           ),
-                      //         )
-                      //       ],
-                      //     ),
-                      //   ],
-                      // ),
 
 
                   Row(
@@ -307,22 +209,24 @@ bool loading = true;
                                   onTap: (){
                                     setState(() {
                                       selectedProjectIndex = index;
+                                      subLoading = true;
                                     });
                                   },
-                                  child: Card(
-
-                                    shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                            color: selectedProjectIndex==index?CommonAssets.selectedBorderColors:CommonAssets.unselectedBorderColors
-                                        ),
-                                        borderRadius: BorderRadius.circular(20.0)
-
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: selectedProjectIndex==index?Theme.of(context).primaryColor:Colors.transparent,
+                                        )
+                                      )
                                     ),
-                                    color: selectedProjectIndex==index?Theme.of(context).primaryColor:CommonAssets.unSelectedItem,
+
+
+                                    // color: selectedProjectIndex==index?Theme.of(context).primaryColor:CommonAssets.unSelectedItem,
                                     child: Center(child: AutoSizeText(
                                       projectList[index],
                                       style: TextStyle(
-                                          color:selectedProjectIndex==index? CommonAssets.buttonTextColor:CommonAssets.unSelectedTextColor,
+                                          color:selectedProjectIndex==index? Theme.of(context).primaryColor:CommonAssets.normalTextColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: size.height*0.02
                                       ),
@@ -339,7 +243,7 @@ bool loading = true;
 
                       Container(
                         height: size.height*0.5,
-                          child:ListView.builder(
+                          child:subLoading?CircularLoading(): ListView.builder(
                               itemCount: dataOfClient.length,
                               itemBuilder: (context,index){
 
