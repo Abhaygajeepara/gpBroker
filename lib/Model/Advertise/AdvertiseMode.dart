@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 
 class AdvertiseModel {
   String id;
-  String description;
+  String? description;
   List<String> imageUrl;
-  bool isActive;
+  bool? isActive;
   AdvertiseModel({
-    @required this.id,
-    @required this.description,
-    @required this.imageUrl,
-    @required this.isActive
+    required this.id,
+    required this.description,
+    required this.imageUrl,
+    required this.isActive
 
   });
 
@@ -18,9 +18,9 @@ class AdvertiseModel {
   {
     return AdvertiseModel(
         id: snapshot.id,
-        description: snapshot.data()['Description'],
-        imageUrl: List.from(snapshot.data()['ImageUrl']),
-      isActive: snapshot.data()['IsActive']
+        description: snapshot['Description'],
+        imageUrl: List.from(snapshot['ImageUrl']),
+      isActive: snapshot['IsActive']
         );
   }
 }

@@ -20,7 +20,7 @@ class _BrokerWalletState extends State<BrokerWallet> {
   final _formKey  = GlobalKey<FormState>();
   final _passwordFormKey  = GlobalKey<FormState>();
   int amount= 0;
-  String password;
+  String? password;
   bool passwordLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -126,7 +126,7 @@ class _BrokerWalletState extends State<BrokerWallet> {
                               ),
                             ),
                             Text(
-                              snapshot.data.brokerModel.walletBalance.toString(),
+                              snapshot.data!.brokerModel.walletBalance.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: size.height*0.02,
@@ -139,9 +139,9 @@ class _BrokerWalletState extends State<BrokerWallet> {
                   SizedBox(height: space,),
 
                       Expanded(child: ListView.builder(
-                          itemCount: snapshot.data.brokerWalletModel.length,
+                          itemCount: snapshot.data!/*!*/.brokerWalletModel.length,
                           itemBuilder: (context,index){
-                            Color textColor = snapshot.data.brokerWalletModel[index].isMoneyAddToWallet?CommonAssets.receivedAmountColor:CommonAssets.remainingAmountColor;
+                            Color textColor = snapshot.data!.brokerWalletModel[index].isMoneyAddToWallet!?CommonAssets.receivedAmountColor:CommonAssets.remainingAmountColor;
                             return Card(
                               child: ExpansionTile(
 
@@ -150,14 +150,14 @@ class _BrokerWalletState extends State<BrokerWallet> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        snapshot.data.brokerWalletModel[index].reasonOfTransfer,
+                                        snapshot.data!.brokerWalletModel[index].reasonOfTransfer!,
                                       style: TextStyle(
                                         color: textColor
                                       ),
                                     ),
                                     SizedBox(width: size.width*0.02,),
                                     Flexible(child: Text(
-                                      snapshot.data.brokerWalletModel[index].amount.toString(),
+                                      snapshot.data!.brokerWalletModel[index].amount.toString(),
                                       style: TextStyle(
                                           color: textColor
                                       ),
@@ -176,7 +176,7 @@ class _BrokerWalletState extends State<BrokerWallet> {
                                       ),
 
                                       Flexible(child: Text(
-                                        snapshot.data.brokerWalletModel[index].transactionTime.toDate().toString().substring(0,16),
+                                        snapshot.data!.brokerWalletModel[index].transactionTime.toDate().toString().substring(0,16),
                                         style: TextStyle(
                                             color: textColor
                                         ),
@@ -195,7 +195,7 @@ class _BrokerWalletState extends State<BrokerWallet> {
                                       ),
                                       SizedBox(width: size.width*0.02,),
                                       Flexible(child: Text(
-                                        snapshot.data.brokerWalletModel[index].reasonOfTransfer,
+                                        snapshot.data!.brokerWalletModel[index].reasonOfTransfer!,
                                         style: TextStyle(
                                             color: textColor
                                         ),
@@ -234,9 +234,9 @@ class _BrokerWalletState extends State<BrokerWallet> {
           })
     );
   }
-  String numbervalidtion(String value){
+  String? numbervalidtion(String value){
     Pattern pattern = '^[0-9]+';
-    RegExp regExp = new RegExp(pattern);
+    RegExp regExp = new RegExp(pattern as String);
     if (!regExp.hasMatch(value)) {
       return AppLocalizations.of(context).translate("NumberOnly");
       return 'Enter The Number Only';

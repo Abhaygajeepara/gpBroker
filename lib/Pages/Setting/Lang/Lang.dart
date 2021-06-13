@@ -11,7 +11,7 @@ class SelectLanguage extends StatefulWidget {
 }
 
 class _SelectLanguageState extends State<SelectLanguage> {
-  SharedPreferences preferences;
+  late SharedPreferences preferences;
   bool loading = true;
   @override
   void initState() {

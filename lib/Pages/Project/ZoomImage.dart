@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:gpgroup/Commonassets/CommonLoading.dart';
 import 'package:gpgroup/Commonassets/Commonassets.dart';
 import 'package:gpgroup/Commonassets/commonAppbar.dart';
-import 'package:zoom_widget/zoom_widget.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
+
 
 class ImageZoom extends StatefulWidget {
   List<String> image;
-  ImageZoom({@required this.image});
+  ImageZoom({/*required*/ required this.image});
   @override
   _ImageZoomState createState() => _ImageZoomState();
 }
 
 class _ImageZoomState extends State<ImageZoom> {
-  String selectedUrl ;
+  late String selectedUrl ;
   @override
   void initState() {
     // TODO: implement initState
@@ -68,12 +69,12 @@ class _ImageZoomState extends State<ImageZoom> {
             thickness: 2,
           ),
           Expanded(
-            child: Zoom(
-              backgroundColor: Colors.transparent,
-              initZoom: 0.0,
-              width: size.width*4,
-              height: size.height*4,
-              child:
+            child: PinchZoom(
+
+              zoomedBackgroundColor: Colors.black.withOpacity(0.5),
+              resetDuration: const Duration(milliseconds: 100),
+              maxScale: 2.5,
+            image:
               CachedNetworkImage(
                 imageUrl:  selectedUrl,
                 placeholder: (context, url) => Center(child: CircularLoading(),),

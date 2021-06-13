@@ -1,7 +1,7 @@
 {
 
   "first_string": "Hello Abhay",
-  "second_string": "Welcome",
+  "Welcome": "Welcome",
   "Flats": "Flats",
   "Floors": "Floors",
   "Shops": "Shops",
@@ -103,7 +103,7 @@
   "MonthlyEMI": "Monthly EMI",
   "ExistingCustomer": "Existing Customer",
   "NewCustomer": "New Customer",
-  "Id": "Id",
+  "Id": "ID",
   "BrokerID": "Broker ID",
 
   "CustomerInformation": "Customer Information",

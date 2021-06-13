@@ -4,16 +4,16 @@ import 'package:gpgroup/Model/Loan/LoanInfo.dart';
 import 'package:gpgroup/Model/Project/InnerData.dart';
 
 class CustomerInfoModel{
-  String customerName;
-  int number;
+  String? customerName;
+  int? number;
  // List<Map<String,dynamic>> propertiesList;
  // List remainingEMIList;
   List<String> notificationKey;
   CustomerInfoModel({
-    @required this.customerName,
-    @required this.number,
+    /*required*/ required this.customerName,
+    /*required*/ required this.number,
  //   @required this.propertiesList,
-   @required this.notificationKey,
+   /*required*/ required this.notificationKey,
   //  @required this.remainingEMIList
 });
   factory CustomerInfoModel.of(DocumentSnapshot snapshot){
@@ -31,7 +31,7 @@ class CustomerInfoModel{
 class BookingAndLoan{
   BookingDataModel bookingData;
   List<SinglePropertiesLoanInfo> loanData;
-  BookingAndLoan({@required this.bookingData,@required this.loanData});
+  BookingAndLoan({/*required*/ required this.bookingData,/*required*/ required this.loanData});
   factory BookingAndLoan.of( BookingDataModel _bookingData,List<SinglePropertiesLoanInfo> _loanData){
    return BookingAndLoan(bookingData: _bookingData, loanData: _loanData);
   }

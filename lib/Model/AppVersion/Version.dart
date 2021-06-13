@@ -6,15 +6,15 @@ class AppVersion{
   String download;
   bool active;
   AppVersion({
-    @required this.active,
-    @required this.download,
-    @required this.version
+    /*required*/ required this.active,
+    /*required*/ required this.download,
+    /*required*/ /*required*/ required this.version
 });
   factory AppVersion.of(DocumentSnapshot snapshot){
     return AppVersion(
-        active: snapshot.data()['Service'],
-        download: snapshot.data()['DownloadLink'],
-        version: snapshot.data()['Version']
+        active: snapshot['Service'],
+        download: snapshot['DownloadLink'],
+        version: snapshot['Version']
     );
   }
 }

@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class LogInAndSignIn {
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Future Login(String id,String password,)async{
   SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -23,9 +23,9 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
       if(brokerExist.exists){
         preferences.setString('BrokerId',id);
 
-      if(brokerExist.data()['Password']== password){
-        if(brokerExist.data()['IsActive']){
-          String notificationToken = await _firebaseMessaging.getToken();
+      if(brokerExist.data()!['Password']== password){
+        if(brokerExist.data()!['IsActive']){
+          String? notificationToken = await _firebaseMessaging.getToken();
 
           await _auth.signInWithEmailAndPassword(email:'test@Broker.com', password: 'Brokerpassword');
           await FirebaseFirestore.instance.collection('Broker').doc(id).update({
@@ -63,10 +63,10 @@ final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 
 
-Future signouts(String brokerID)async{
+Future signouts(String? brokerID)async{
     try{
       await _auth.signOut();
-      String notificationToken = await _firebaseMessaging.getToken();
+      String? notificationToken = await _firebaseMessaging.getToken();
       print('notificationToken=${notificationToken}');
       await FirebaseFirestore.instance.collection('Broker').doc(brokerID).update({
         "NotificationKey":FieldValue.arrayRemove([notificationToken]),
@@ -78,14 +78,14 @@ Future signouts(String brokerID)async{
     }
 }
 
-UsersData _userData (DocumentSnapshot snapshot){
-    try{
-     UserData.of(snapshot);
-    }
-    catch(e){
-      print(e.toString());
-    }
-}
+// UsersData _userData (DocumentSnapshot snapshot){
+//     try{
+//      UserData.of(snapshot);
+//     }
+//     catch(e){
+//       print(e.toString());
+//     }
+// }
 // Stream<UsersData> get USERDATA{
 //     return _auth.authStateChanges().map(_userData);
 // }

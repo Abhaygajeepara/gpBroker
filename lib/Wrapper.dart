@@ -41,19 +41,21 @@ class _WrapperState extends State<Wrapper> {
     // else{
     //   return Home();
     // }
-    return StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context,AsyncSnapshot<User> snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting)
-          return CircularLoading();
-        if(!snapshot.hasData || snapshot.data == null)
-        {
-          return Login();
-        }
-        else{
-          return Home();
-        }
-      },
+    return Scaffold(
+      body: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context,AsyncSnapshot<User?> snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting)
+            return CircularLoading();
+          if(!snapshot.hasData || snapshot.data == null)
+          {
+            return Login();
+          }
+          else{
+            return Home();
+          }
+        },
+      ),
     );
   }
 }

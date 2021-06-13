@@ -4,5 +4,5 @@ class RulesModel{
   List<String> english;
   List<String> hindi;
   List<String> gujarati;
-  RulesModel({@required this.english,@required this.hindi,@required this.gujarati});
+  RulesModel({/*required*/ required this.english,/*required*/ required this.hindi,/*required*/ required this.gujarati});
 }

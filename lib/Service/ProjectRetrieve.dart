@@ -13,25 +13,25 @@ import 'package:gpgroup/Model/Wallet/BrokerWallet.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProjectRetrieve{
-  String brokerId;
-  String customer;
-  String loadId;
-  String projectName;
-  int recordLimits ;
-  String adsId;
+  String? brokerId;
+  String? customer;
+  String?/*?*//*?*//*?*/ loadId;
+  String? projectName;
+  late int recordLimits ;
+  String? adsId;
   setAds(String  ad){
     this.adsId = ad;
   }
-  setBrokerId(String id){
+  setBrokerId(String? id){
     this.brokerId = id;
   }
   setCustomer(String id){
     this.customer = id;
   }
-  setPropertiesLoanRef(String ref){
+  setPropertiesLoanRef(String? ref){
     this.loadId = ref;
   }
-  setProjectName(String name){
+  setProjectName(String? name){
     this.projectName = name;
   }
   setRecordLimit(int limits){
@@ -73,7 +73,7 @@ class ProjectRetrieve{
     }).toList();
   }
   Stream<List<SinglePropertiesLoanInfo>> get LOANINFO{
-    return FirebaseFirestore.instance.collection('Loan').doc(projectName).collection(loadId).orderBy("InstallmentDate",descending:false ).snapshots().map((_listLoanData));
+    return FirebaseFirestore.instance.collection('Loan').doc(projectName).collection(loadId!).orderBy("InstallmentDate",descending:false ).snapshots().map((_listLoanData));
   }
 
   List<IncomeModel> _brokerSales(QuerySnapshot snapshot){
@@ -98,14 +98,14 @@ class ProjectRetrieve{
     return infoReference.doc('BrokerApp').snapshots().map(appVersion);
   }
 
-  StreamController<List<CommissionCountModel>> brokerCommissionController = BehaviorSubject<List<CommissionCountModel>>();
-  Stream<List<CommissionCountModel>> get ACCOUNTCOMMISSION=>brokerCommissionController.stream;
+  StreamController<List<CommissionCountModel?>> brokerCommissionController = BehaviorSubject<List<CommissionCountModel?>>();
+  Stream<List<CommissionCountModel?>> get ACCOUNTCOMMISSION=>brokerCommissionController.stream;
 
   checkBrokercommission(List brokerPropertiesList)async{
 
 
-    List<CommissionCountModel> listOfCommissionCount = [];
-    List<String> listOfProject = [];
+    List<CommissionCountModel?> listOfCommissionCount = [];
+    List<String?> listOfProject = [];
     List<List<Map<String,dynamic>>> allActiveClients =[];// each sub list contain same projects data
     for(int i=0;i<brokerPropertiesList.length;i++){
       if(!listOfProject.contains(brokerPropertiesList[i]['ProjectName'])){
@@ -125,10 +125,10 @@ class ProjectRetrieve{
 
     for(int x =0;x<allActiveClients.length;x++){
       //EMIPending  true = emi is remaining and false = emi is paid
-      CommissionCountModel _commissionCountModel;
+      CommissionCountModel? _commissionCountModel;
       List<SinglePropertiesLoanInfo> paidEmi = [];
       List<SinglePropertiesLoanInfo> remainingEmi=[];
-      String _localProjectName = allActiveClients[x].first['ProjectName'];
+      String?/*?*/ _localProjectName = allActiveClients[x].first['ProjectName'];
       for(int y=0;y<allActiveClients[x].length;y++){
 
         String localRef =allActiveClients[x][y]['LoanRef'];
@@ -151,7 +151,7 @@ class ProjectRetrieve{
 
           }).toList();
         });
-        _commissionCountModel = CommissionCountModel.of(_localProjectName, paidEmi, remainingEmi);
+        _commissionCountModel = CommissionCountModel.of(_localProjectName!, paidEmi, remainingEmi);
       }
 
       listOfCommissionCount.add(_commissionCountModel);
@@ -173,10 +173,10 @@ class ProjectRetrieve{
     } );
   }
   Stream<BookingDataModel> get CUSTOMERSINGLEPROPETIES{
-    return loanReference.doc(projectName).collection(loadId).doc('BasicDetails').snapshots().map(_bookingDataModel);
+    return loanReference.doc(projectName).collection(loadId!).doc('BasicDetails').snapshots().map(_bookingDataModel);
   }
   BookingDataModel _bookingDataModel(DocumentSnapshot snapshot){
-    return  BookingDataModel.of(snapshot,loadId);
+    return  BookingDataModel.of(snapshot,loadId!);
   }
   Stream<BookingAndLoan> BOOKINGANDLOAN(){
     return Rx.combineLatest2(CUSTOMERSINGLEPROPETIES, LOANINFO, (BookingDataModel bookingDataModel, List<SinglePropertiesLoanInfo> loanData) {

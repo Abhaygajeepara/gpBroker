@@ -8,32 +8,32 @@ class SinglePropertiesLoanInfo{
   Timestamp installmentDate;
   bool emiPending;
   String typeOfPayment;
-  String ifsc;
-  String  upiId;
-  String bankAccountNumber;
+  String ifsc = '';
+  String  upiId = '';
+  String bankAccountNumber= '';
   String payerName;
   String receiverName;
   String relation;
   int amount;
-  int brokerCommission;
+  int/*!*/ brokerCommission;
   Timestamp paymentTime;
 
 
   SinglePropertiesLoanInfo({
-    @required this.loanId,
-    @required  this.emiId,
-    @required this.installmentDate,
-    @required this.emiPending,
-    @required this.typeOfPayment,
-    @required this.ifsc,
-    @required this.upiId,
-    @required  this.bankAccountNumber,
-    @required  this.payerName,
-    @required this.receiverName,
-    @required this.relation,
-    @required this.amount,
-    @required this.paymentTime,
-    @required this.brokerCommission
+    /*required*/ required this.loanId,
+    /*required*/ required  this.emiId,
+    /*required*/ required this.installmentDate,
+    /*required*/ required this.emiPending,
+    /*required*/ required this.typeOfPayment,
+    /*required*/ required this.ifsc,
+    /*required*/ required this.upiId,
+    /*required*/ required  this.bankAccountNumber,
+    /*required*/ required  this.payerName,
+    /*required*/ required this.receiverName,
+    /*required*/ required this.relation,
+    /*required*/ required this.amount,
+    /*required*/ required this.paymentTime,
+    /*required*/ required this.brokerCommission
 
   });
   factory SinglePropertiesLoanInfo.of(DocumentSnapshot snapshot){
@@ -44,9 +44,9 @@ class SinglePropertiesLoanInfo{
         installmentDate: snapshot['InstallmentDate'],
         emiPending: snapshot['EMIPending'],
         typeOfPayment: snapshot['TypeOfPayment'],
-        ifsc: snapshot['IFSC'],
-        upiId: snapshot['UPIID'],
-        bankAccountNumber: snapshot['BankAccountNumber'],
+        ifsc: snapshot['IFSC']??'',
+        upiId: snapshot['UPIID']??'',
+        bankAccountNumber: snapshot['BankAccountNumber']??'',
         payerName: snapshot['PayerName'],
         receiverName: snapshot['ReceiverName'],
         relation: snapshot['Relation'],
@@ -90,21 +90,21 @@ class LoanBasicDetails{
   List<Timestamp> remainingEmi;
   LoanBasicDetails({
 
-    @required  this.cusBookingDate,
-    @required  this.loanStartingDate,
-    @required this.loanEndingDate,
-    @required  this.isLoanOn,
-    @required  this.customerId,
+    required  this.cusBookingDate,
+    required  this.loanStartingDate,
+    required this.loanEndingDate,
+    required  this.isLoanOn,
+    required  this.customerId,
 
 
-    @required this.brokerReference,
-    @required this.brokerCommission,
-    @required  this.squareFeet,
-    @required this.pricePerSquareFeet,
-    @required this.totalEMI,
-    @required this.perMonthEMI,
-    @required this.completeEmi,
-    @required this.remainingEmi
+    required this.brokerReference,
+    required this.brokerCommission,
+    required  this.squareFeet,
+    required this.pricePerSquareFeet,
+    required this.totalEMI,
+    required this.perMonthEMI,
+    /*required*/ required this.completeEmi,
+    /*required*/ required this.remainingEmi
 
   });
   factory  LoanBasicDetails.of(DocumentSnapshot snap){
@@ -135,8 +135,8 @@ class FullLoanDetails{
   List<SinglePropertiesLoanInfo> singlePropertiesLoanInfo;
   LoanBasicDetails loanBasicDetails;
   FullLoanDetails({
-    @required   this.singlePropertiesLoanInfo,
-    @required this.loanBasicDetails
+    /*required*/ required   this.singlePropertiesLoanInfo,
+    required this.loanBasicDetails
   });
   factory FullLoanDetails.of( List<SinglePropertiesLoanInfo> singlePropertiesLoanInfo, LoanBasicDetails loanBasicDetails){
     return FullLoanDetails(loanBasicDetails:loanBasicDetails , singlePropertiesLoanInfo: singlePropertiesLoanInfo);
@@ -148,9 +148,9 @@ class CommissionCountModel{
   List<SinglePropertiesLoanInfo> paidEmi;
   List<SinglePropertiesLoanInfo> remainingEmi;
   CommissionCountModel({
-    @required this.projectName,
-    @required this.paidEmi,
-    @required this.remainingEmi,
+    /*required*/ required this.projectName,
+    /*required*/ required this.paidEmi,
+    /*required*/ required this.remainingEmi,
   });
   factory CommissionCountModel.of(String projectName, List<SinglePropertiesLoanInfo> paidEmi,  List<SinglePropertiesLoanInfo> remainingEmi){
     return CommissionCountModel(projectName: projectName, paidEmi: paidEmi, remainingEmi: remainingEmi);
@@ -163,10 +163,10 @@ class IncomeCountModel{
   List<SinglePropertiesLoanInfo> remainingEmi;
   List<SinglePropertiesLoanInfo> closedBookingPaidEmi;
   IncomeCountModel({
-    @required this.projectName,
-    @required this.paidEmi,
-    @required this.remainingEmi,
-    @required this.closedBookingPaidEmi,
+    /*required*/ /*required*/ /*required*/ required this.projectName,
+    /*required*/ /*required*/ required this.paidEmi,
+    /*required*/ /*required*/ /*required*/ required this.remainingEmi,
+    /*required*/ /*required*/ /*required*/ required this.closedBookingPaidEmi,
   });
   factory IncomeCountModel.of(String projectName, List<SinglePropertiesLoanInfo> paidEmi,  List<SinglePropertiesLoanInfo> remainingEmi, List<SinglePropertiesLoanInfo> closedBookingPaidEmi){
     return IncomeCountModel(projectName: projectName, paidEmi: paidEmi, remainingEmi: remainingEmi,closedBookingPaidEmi: closedBookingPaidEmi);

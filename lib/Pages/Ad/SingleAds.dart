@@ -53,14 +53,14 @@ class _SingleAdsState extends State<SingleAds> {
 
                       scrollDirection: Axis.horizontal,
                     ),
-                    itemCount: snapshot.data.imageUrl.length,
-                    itemBuilder: (BuildContext context,index){
+                    itemCount: snapshot.data!.imageUrl.length,
+                    itemBuilder: (ctx, index, realIdx){
                       return GestureDetector(
                         onTap: (){
                           Navigator.push(context, PageRouteBuilder(
                             //    pageBuilder: (_,__,____) => BuildingStructure(),
                             pageBuilder: (_, __, ___) => ImageZoom(
-                                image: snapshot.data.imageUrl),
+                                image: snapshot.data!.imageUrl),
                             transitionDuration: Duration(
                                 milliseconds: 0),
                           ));
@@ -84,7 +84,7 @@ class _SingleAdsState extends State<SingleAds> {
                         },
                         child:
                         CachedNetworkImage(
-                          imageUrl:  snapshot.data.imageUrl[index],
+                          imageUrl:  snapshot.data!.imageUrl[index],
                           placeholder: (context, url) => Center(child: CircularLoading(),),
                           errorWidget: (context, url, error) => Icon(Icons.error),
 
@@ -130,7 +130,7 @@ class _SingleAdsState extends State<SingleAds> {
                       ),
                       SizedBox(height: spaceVertical *2,),
                       Text(
-                        snapshot.data.description ,
+                        snapshot.data!.description! ,
                         style: TextStyle(
                           fontSize: labelFontSize,
 

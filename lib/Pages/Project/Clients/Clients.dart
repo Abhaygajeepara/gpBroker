@@ -24,10 +24,10 @@ class BrokerClients extends StatefulWidget {
 
 class _BrokerClientsState extends State<BrokerClients> {
 
-  int number ;
+  late int number ;
   // bool isSearch = false;
   // bool isSearchByName = false;
-  String customerName;
+  late String customerName;
   bool cancelCustomer = false;
   List<Map<String,dynamic>> dataOfClient =[];
   List<Map<String,dynamic>> searchList =[];
@@ -37,7 +37,7 @@ class _BrokerClientsState extends State<BrokerClients> {
   List<List<Map<String,dynamic>>> allClosedClients =[];
   int selectedProjectIndex =0;
   List<Map<String,dynamic>> demoLoanRef =[];
-  BrokerModel brokerModel;
+  BrokerModel?/*?*//*?*/ brokerModel;
 bool loading = true;
 bool subLoading = true;
 
@@ -48,8 +48,8 @@ bool subLoading = true;
     allClosedClients =[];
 
 
-    List<Map<String,dynamic>> localActiveClients =brokerModel.clients;
-    List<Map<String,dynamic>> localCancelClients =brokerModel.closedBooking;
+    List<Map<String,dynamic>> localActiveClients =brokerModel!.clients;
+    List<Map<String,dynamic>> localCancelClients =brokerModel!.closedBooking;
 
     for(int i=0;i<localActiveClients.length;i++){
 
@@ -107,7 +107,7 @@ bool subLoading = true;
 
   assignData(BrokerModel _brokerModel)async{
     brokerModel =  _brokerModel;
-    demoLoanRef =brokerModel.clients;
+    demoLoanRef =brokerModel!.clients;
     await  ProjectRetrieve().checkBrokercommission(demoLoanRef);
    await projectWishData();
     await allocate();
@@ -166,7 +166,7 @@ bool subLoading = true;
             stream: _projectRetrieve.SINGLEBROKERDATA,
             builder: (context,brokerSnapshot){
               if(brokerSnapshot.hasData){
-                assignData(brokerSnapshot.data);
+                assignData(brokerSnapshot.data!);
                 return loading?CircularLoading(): Padding(
                   padding:  EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
                   child:
@@ -252,7 +252,7 @@ bool subLoading = true;
                                     onTap: ()async{
                                       await projectRetrieve.setProjectName(dataOfClient[index]['ProjectName']);
                                       await projectRetrieve.setPropertiesLoanRef(dataOfClient[index]['LoanRef']);
-                                      return    Navigator.push(
+                                          Navigator.push(
                                         context,
                                         PageRouteBuilder(
                                           pageBuilder: (_, __, ___) => LoanInfo(),

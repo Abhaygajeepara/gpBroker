@@ -12,7 +12,9 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="VrajRaj Broker"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+
+        >
 
         <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"

@@ -13,5 +13,5 @@ class CommercialArcadeModel{
       'DifferentialValue':differentialValue,
       'Staring':staring
     };}
-CommercialArcadeModel({@required this.totalFloor,@required this.shops, @required this.differentialValue, @required  this.staring});
+CommercialArcadeModel({/*required*/ required this.totalFloor,/*required*/ required this.shops, /*required*/ required this.differentialValue, /*required*/ required  this.staring});
 }

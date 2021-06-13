@@ -1,6 +1,6 @@
 class CreateHousingStrctureModel{
-  String name;
-  int totalhouse;
+  String? name;
+  int? totalhouse;
   Map<String, dynamic> toMap() {
     return {
       'Name': name,

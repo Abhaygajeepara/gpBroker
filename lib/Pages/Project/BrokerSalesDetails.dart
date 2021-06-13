@@ -20,8 +20,8 @@ class _BrokerCommissionState extends State<BrokerCommission> {
 
   bool loading = true;
   DateTime now = DateTime.now();
-  int desireMonth ;
-  int desireYear ;
+ late int desireMonth ;
+  late int desireYear ;
   List<SinglePropertiesLoanInfo> desireMonthRemaining=[];
   List<SinglePropertiesLoanInfo> desireMonthPaid=[];
   // index
@@ -116,7 +116,7 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                             labelText: AppLocalizations.of(context)
                                 .translate('Month')),
                         value: desireMonth,
-                        onChanged: (val){
+                        onChanged: (dynamic val){
                           setState(() {
                             desireMonth = val;
 
@@ -162,17 +162,17 @@ class _BrokerCommissionState extends State<BrokerCommission> {
           stream: _projectRetrieve.SINGLEBROKERDATA,
           builder: (context,brokerSnapshot){
             if(brokerSnapshot.hasData){
-              setData(_projectRetrieve, brokerSnapshot.data.clients);
+              setData(_projectRetrieve, brokerSnapshot.data!/*!*/.clients);
 
-              return StreamBuilder<List<CommissionCountModel>>(
+              return StreamBuilder<List<CommissionCountModel?>>(
                   stream: _projectRetrieve.ACCOUNTCOMMISSION,
                   builder: (context,snapshot){
                     if(snapshot.hasData){
-                      if(snapshot.data.length>0){
-                        setDesiredMonthData(snapshot.data[projectIndex]);
+                      if(snapshot.data!.length>0){
+                        setDesiredMonthData(snapshot.data![projectIndex]!/*!*/);
                       }
                       //padding:  EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.01),
-                      return snapshot.data.length<=0?
+                      return snapshot.data!.length<=0?
                       Center(child: Text(
                         AppLocalizations.of(context).translate('NoData'),
                         style: TextStyle(
@@ -182,7 +182,7 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                       ),):
                       RefreshIndicator(
                         onRefresh: ()async{
-                          setData(_projectRetrieve, brokerSnapshot.data.clients);
+                          setData(_projectRetrieve, brokerSnapshot.data!.clients);
                           setState(() {
 
                           });
@@ -204,7 +204,7 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                                 // ),
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data.length,
+                                    itemCount: snapshot.data!.length,
                                     itemBuilder: (context,index){
                                       return GestureDetector(
                                         onTap: (){
@@ -224,7 +224,7 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                                               ),
 
                                             ),
-                                            child: Center(child: Text(snapshot.data[index].projectName,
+                                            child: Center(child: Text(snapshot.data![index]!.projectName,
                                               style: TextStyle(
                                                   color:projectIndex!=index? CommonAssets.normalTextColor:Theme.of(context).primaryColor,
                                                   fontWeight: FontWeight.bold,
@@ -281,7 +281,7 @@ class _BrokerCommissionState extends State<BrokerCommission> {
                               ),
                               Divider(height: dividerheight,),
                               Expanded(
-                                  child: redirectWidget(snapshot.data[projectIndex],_projectRetrieve,context)
+                                  child: redirectWidget(snapshot.data!/*!*/[projectIndex]!,_projectRetrieve,context)
                               )
                             ],
                           ),

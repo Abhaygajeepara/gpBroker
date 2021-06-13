@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class PaidEmiDetails extends StatefulWidget {
   SinglePropertiesLoanInfo singlePropertiesLoanInfo;
-  PaidEmiDetails({@required this.singlePropertiesLoanInfo});
+  PaidEmiDetails({/*required*/ /*required*/ required this.singlePropertiesLoanInfo});
   @override
   _PaidEmiDetailsState createState() => _PaidEmiDetailsState();
 }

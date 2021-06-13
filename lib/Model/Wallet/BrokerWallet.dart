@@ -3,26 +3,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
 
 class BrokerWalletModel{
-  int amount;
+  int? amount;
   Timestamp transactionTime;
-  int walletBalanceAtTimeOfTransfer;
-  bool isMoneyAddToWallet;
-  String reasonOfTransfer;
+  int?/*?*/ walletBalanceAtTimeOfTransfer;
+  bool? isMoneyAddToWallet;
+  String? reasonOfTransfer;
   BrokerWalletModel({
-    @required this.amount,
-    @required this.transactionTime,
-    @required this.walletBalanceAtTimeOfTransfer,
-    @required this.isMoneyAddToWallet,
-    @required this.reasonOfTransfer,
+    /*required*/ /*required*/ /*required*/ /*required*/ /*required*/ required this.amount,
+    /*required*/ required this.transactionTime,
+    /*required*/ /*required*/ required this.walletBalanceAtTimeOfTransfer,
+    /*required*/ required this.isMoneyAddToWallet,
+    /*required*/ /*required*/ /*required*/ /*required*/ required this.reasonOfTransfer,
 
 });
   factory BrokerWalletModel.of(DocumentSnapshot snapshot){
     return BrokerWalletModel(
-        amount: snapshot.data()['Amount'],
-        transactionTime: snapshot.data()['Time'],
-        walletBalanceAtTimeOfTransfer: snapshot.data()['WalletBalance'],
-        isMoneyAddToWallet: snapshot.data()['IsAdd'],
-        reasonOfTransfer: snapshot.data()['Reason']);
+        amount: snapshot['Amount'],
+        transactionTime: snapshot['Time'],
+        walletBalanceAtTimeOfTransfer: snapshot['WalletBalance'],
+        isMoneyAddToWallet: snapshot['IsAdd'],
+        reasonOfTransfer: snapshot['Reason']);
   }
 }
 
@@ -30,8 +30,8 @@ class BrokerWalletAndProfile{
   List<BrokerWalletModel> brokerWalletModel;
   BrokerModel brokerModel;
   BrokerWalletAndProfile({
-    @required this.brokerWalletModel,
-    @required this.brokerModel,
+    /*required*/ /*required*/ /*required*/ /*required*/ required this.brokerWalletModel,
+    /*required*/ /*required*/ /*required*/ /*required*/ required this.brokerModel,
 
 });
   factory BrokerWalletAndProfile.of(List<BrokerWalletModel> brokerWalletModel,BrokerModel brokerModel){

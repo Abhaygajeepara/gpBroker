@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
    Map<String,dynamic> floorsandflats;
 
-   BuildingStructureNumberModel({this.floorsandflats});
+   BuildingStructureNumberModel({required this.floorsandflats});
  //List<BuildingStructureModel> floorsandflats;
  // Map<String, dynamic> toMap() {
  //   return {

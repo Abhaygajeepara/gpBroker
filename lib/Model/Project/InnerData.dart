@@ -6,7 +6,7 @@ class InnerData{
   List<BookingDataModel> cusList;
   List<int>soldList;
 
-  InnerData({@required this.name, @required this.cusList, @required this.soldList});
+  InnerData({/*required*/ /*required*/ required this.name, /*required*/ required this.cusList, /*required*/ required this.soldList});
   factory InnerData.of(String nameOfStructure,QuerySnapshot snapshot){
 
     List<BookingDataModel> cusLists = [];
@@ -30,14 +30,14 @@ class BookingDataModel{
   Timestamp loanStartingDate;
   Timestamp loanEndingDate;
   // String customerName;
-  bool isLoanOn;
+  bool/*!*/ isLoanOn;
   String loanReferenceCollectionName;
   String customerId;
   int brokerCommission;
   String brokerReference;
   //List<Map<String ,dynamic>> allCustomer;
   int squareFeet;
-  int pricePerSquareFeet;
+  int/*!*/ pricePerSquareFeet;
   int totalEMI;
   int perMonthEMI;
   String part;
@@ -48,22 +48,22 @@ class BookingDataModel{
 
   BookingDataModel({
     //  @required this.id,
-    @required  this.cusBookingDate,
-    @required  this.loanStartingDate,
-    @required this.loanEndingDate,
-    @required  this.isLoanOn,
-    @required  this.customerId,
+    /*required*/ required  this.cusBookingDate,
+    /*required*/ required  this.loanStartingDate,
+    /*required*/ required this.loanEndingDate,
+    /*required*/ required  this.isLoanOn,
+    /*required*/ required  this.customerId,
     //@required this.customerName,
-    @required  this.loanReferenceCollectionName,
-    @required this.brokerReference,
+    /*required*/ required  this.loanReferenceCollectionName,
+    /*required*/ required this.brokerReference,
     //@required this.allCustomer,
-    @required this.brokerCommission,
-    @required  this.squareFeet,
-    @required this.pricePerSquareFeet,
-    @required this.totalEMI,
-    @required this.perMonthEMI,
-    @required this.part,
-    @required this.propertiesNumber
+    /*required*/ required this.brokerCommission,
+    /*required*/ required  this.squareFeet,
+    /*required*/ required this.pricePerSquareFeet,
+    /*required*/ required this.totalEMI,
+    /*required*/ required this.perMonthEMI,
+    /*required*/ required this.part,
+    /*required*/ required this.propertiesNumber
 
   });
   factory  BookingDataModel.of(DocumentSnapshot snap,String loanRef){
@@ -180,7 +180,7 @@ class BookingDataModel{
 //   factory FlatsPerFloor.of(List<DocumentSnapshot> flats){
 //     List<CustomerData> cusLists = [];
 //     for(int i  =0;i<flats.length;i++){
-//       // CustomerData data= CustomerData.of(snapshot.docs[i].data());
+//       // CustomerData data= CustomerData.of(snapshot.docs[i]);
 //       cusLists.add(CustomerData.of(flats[i]));
 //     }
 //     return FlatsPerFloor(

@@ -13,8 +13,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool error = false;
-  String id ;
-  String password ;
+  late String id ;
+  late String password ;
   bool loading = false;
   String errorMessage='';
   final _formkey = GlobalKey<FormState>();
@@ -29,21 +29,26 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return  Scaffold(
-      resizeToAvoidBottomInset: false,
-     body: loading ?CircularLoading(): Container(
-       //height: size.height,
-       child: Center(
-         child: Form(
+      // resizeToAvoidBottomInset: false,
+     body: Center(
+       child: SingleChildScrollView(
+         child: loading ?CircularLoading(): Form(
            key: _formkey,
            child: Padding(
                padding:  EdgeInsets.symmetric(horizontal: size.width * 0.10),
                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  //mainAxisAlignment: MainAxisAlignment.center,
                    crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
+
+              
+                     Image.asset('assets/vrajraj.png'),
+                     SizedBox(height: size.height*0.02,),
+
+                     SizedBox(height: size.height*0.02,),
                TextFormField(
-               decoration: loginAndsignincommoninputdecoration.copyWith(labelText:  AppLocalizations.of(context).translate('Id')),
-           validator: (val) => val.isEmpty ?AppLocalizations.of(context).translate('Id'):null,
+               decoration: loginAndsignincommoninputdecoration.copyWith(labelText: AppLocalizations.of(context).translate('Broker')+ AppLocalizations.of(context).translate('Id')),
+           validator: (val) => val!/*!*/.isEmpty ?AppLocalizations.of(context).translate('Broker')+AppLocalizations.of(context).translate('Id'):null,
            onChanged: (val)=> id =val,
          ),
                      SizedBox(height: size.height*0.02,),
@@ -59,7 +64,7 @@ class _LoginState extends State<Login> {
 
 
                ),),
-             validator: (val) => val.isEmpty ?AppLocalizations.of(context).translate('EnterPassword'):null,
+             validator: (val) => val!.isEmpty ?AppLocalizations.of(context).translate('EnterPassword'):null,
              onChanged: (val)=> password =val,
 
            ),
@@ -73,12 +78,15 @@ class _LoginState extends State<Login> {
                       ),
                      ):Container(),
                      SizedBox(height: size.height*0.015,),
-           RaisedButton(
-             padding: EdgeInsets.symmetric(horizontal: size.width * 0.15,vertical: size.height * 0.02),
-             shape: StadiumBorder(),
-             color: CommonAssets.registerTextColor,
+           ElevatedButton(
+             style: ElevatedButton.styleFrom(
+               padding: EdgeInsets.symmetric(horizontal: size.width * 0.15,vertical: size.height * 0.02),
+               shape: StadiumBorder(),
+             //  primary: CommonAssets.registerTextColor,
+             ),
+
              onPressed: ()async{
-              if(_formkey.currentState.validate()){
+              if(_formkey.currentState!.validate()){
                 setState(() {
                   loading = true;
                 });

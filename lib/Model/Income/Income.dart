@@ -7,9 +7,9 @@ class IncomeModel{
   Timestamp emiMonthTimestamp;
   List<Map<String,dynamic>> clientData;
   IncomeModel({
-    @required this.clientData,
-    @required this.month,
-    @required this.emiMonthTimestamp,
+    /*required*/ /*required*/ /*required*/ /*required*/ required this.clientData,
+    /*required*/ required this.month,
+    /*required*/ required this.emiMonthTimestamp,
   });
   factory IncomeModel.of(DocumentSnapshot e){
     return IncomeModel(
@@ -39,8 +39,8 @@ class IncomeAndExpanse{
   List<IncomeModel> income;
   List<IncomeModel> expanse;
   IncomeAndExpanse({
-    @required this.income,
-    @required this.expanse,
+    /*required*/ /*required*/ required this.income,
+    /*required*/ required this.expanse,
   });
   factory IncomeAndExpanse.of(List<IncomeModel> _income,List<IncomeModel> _expnase){
     return IncomeAndExpanse(income:_income , expanse: _expnase);

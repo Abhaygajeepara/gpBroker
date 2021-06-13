@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ import 'package:gpgroup/Model/User.dart';
 import 'package:gpgroup/Pages/splashScreen.dart';
 import 'package:gpgroup/Service/Auth/LoginAuto.dart';
 import 'package:gpgroup/Service/Lang/LangChange.dart';
-
+import 'dart:isolate';
 
 import 'package:gpgroup/Service/ProjectRetrieve.dart';
 import 'package:gpgroup/Service/connectivity_service.dart';
@@ -48,13 +50,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  SharedPreferences preferences;
-  Locale _oldLocale;
+  ReceivePort _port = ReceivePort();
+  late SharedPreferences preferences;
+  Locale? _oldLocale;
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     waitting();
+    IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+      setState((){ });
+    });
+
+    FlutterDownloader.registerCallback(downloadCallback);
+  }
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    send.send([id, status, progress]);
   }
   waitting()async{
     preferences = await SharedPreferences.getInstance();
@@ -95,7 +116,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context,connectionSnapshot){
           if(connectionSnapshot.data == ConnectivityStatus.Cellular
               || connectionSnapshot.data == ConnectivityStatus.WiFi){
-            return StreamBuilder<Locale>(
+            return StreamBuilder<Locale?>(
                 stream:   lang.out,
                 builder: (context,local){
                   return StreamBuilder<AppVersion>(
@@ -111,8 +132,11 @@ class _MyAppState extends State<MyApp> {
                             theme: ThemeData(
                               primaryColor:  Color(0xff079ff7),
                               buttonColor: Colors.black,
-
-
+                              elevatedButtonTheme: ElevatedButtonThemeData(
+                                style: ElevatedButton.styleFrom(
+                                  primary: CommonAssets.registerTextColor,
+                                ),),
+                      backgroundColor: Colors.white,
                               //  primaryColor:  Colors.black.withOpacity(0.6),
                               bottomAppBarColor: Colors.lightBlue,
 
@@ -148,7 +172,7 @@ class _MyAppState extends State<MyApp> {
                             //   // from the list (English, in this case).
                             //   return supportedLocales.first;
                             // },
-                            home: redirectWidget(snapshot.data),
+                            home: redirectWidget(snapshot.data!),
                           ),
                         );
 
@@ -164,28 +188,33 @@ class _MyAppState extends State<MyApp> {
                         ));
                       }
                       else{
-                        return CircularLoading();
+                        return MaterialApp(home:Scaffold(
+                            body: CircularLoading() ));
                       }
                     },
 
                   );
                 });
           } else{
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Image.asset('assets/NoInterNet.png'),
-                AutoSizeText(
+            return MaterialApp(
+              home: Scaffold(
+                body: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Image.asset('assets/NoInterNet.png'),
+                    AutoSizeText(
 
-                  "No Internet Connection Found",
-                  maxLines: 4,
-                  style: TextStyle(
-                    fontSize: 25,
+                      "No Internet Connection Found",
+                      maxLines: 4,
+                      style: TextStyle(
+                        fontSize: 25,
 
-                  ),
-                )
-              ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             );
           }
         });
@@ -201,42 +230,36 @@ class _MyAppState extends State<MyApp> {
         return SplashPage();
       }else{
         return Scaffold(
-          body: UpgradeAlert(
+          body: Center(
+            child: SingleChildScrollView(
+              child: Column(
 
-            child: Center(child: RaisedButton(
-              onPressed: ()async{
-                final storageRequest = await Permission.storage.request();
-                if(storageRequest.isGranted){
-                  final directory = await getExternalStorageDirectory();
-                  final path= Directory("storage/emulated/0/Download/GPGroup");
-                  print(directory.path);
-                  if ((await path.exists())){
+                children: [
+                  Image.asset('assets/vrajraj.png'),
+                  SizedBox(height: 80,),
+                  Text('Download New Version Of Application',
+                  style: TextStyle(
+                    fontSize: 18
+                  ),
+                  ),
+                  SizedBox(height: 20,),
+                  ElevatedButton.icon(
+                    icon: Icon(Icons.download,size: 40,),
+                    style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 20,horizontal: 30),
+                      shape: StadiumBorder()
+                    ),
+                    onPressed: ()async{
+                      appDownload(appVersion);
 
-                    print("exist");
-                  }else{
-
-                    print("not exist");
-                    path.create();
-                    final taskId = await FlutterDownloader.enqueue(
-                      url: appVersion.download,
-                      savedDir: path.path,
-                      showNotification: true, // show download progress in status bar (for Android)
-                      openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-                    );
-                  }
-
- final taskId = await FlutterDownloader.enqueue(
-                      url: appVersion.download,
-                      savedDir: path.path,
-                      showNotification: true, // show download progress in status bar (for Android)
-                      openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-                    );
-                }else{
-      openAppSettings();
-    }
-
-              },
-            )),
+                    }, label: Text('Download',style: TextStyle(
+                    fontSize: 30,
+                      color: CommonAssets.buttonTextColor
+                  ),),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       }
@@ -244,16 +267,62 @@ class _MyAppState extends State<MyApp> {
     }
     else{
       return Scaffold(
-        body: Center(child: Text(
-          'Broker App Is Block For Some Time',
+        body:
+        Center(
+          child: SingleChildScrollView(
+            child: Column(
 
-          style: TextStyle(
-              color: CommonAssets.errorColor,
-              fontSize:25
+              children: [
+                Image.asset('assets/vrajraj.png'),
+                SizedBox(height: 80,),
+                Text('Broker Service Is Block For Some Time',
+                  style: TextStyle(
+                      color: CommonAssets.errorColor,
+                      fontSize:23
+                  ),
+                ),
+
+
+              ],
+            ),
           ),
-        )),
+        ),
       );
     }
   }
+
+   appDownload(AppVersion appVersion) async{
+     final storageRequest = await Permission.storage.request();
+     if(storageRequest.isGranted){
+       Directory? directory = await (getExternalStorageDirectory() as FutureOr<Directory?>);
+       final path= Directory("storage/emulated/0/Download/GPGroup");
+       print(directory?.path);
+       if ((await path.exists())){
+
+         print("exist");
+       }else{
+
+         print("not exist");
+     await    path.create();
+         // final taskId = await FlutterDownloader.enqueue(
+         //   fileName: 'Broker-${appVersion.version}',
+         //
+         //   url: appVersion.download,
+         //   savedDir: path.path,
+         //   showNotification: true, // show download progress in status bar (for Android)
+         //   openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+         // );
+       }
+
+        await FlutterDownloader.enqueue(
+         url: appVersion.download,
+         savedDir: path.path,
+         showNotification: true, // show download progress in status bar (for Android)
+         openFileFromNotification: true, // click on notification to open downloaded file (for Android)
+       );
+     }else{
+       openAppSettings();
+     }
+   }
 }
 

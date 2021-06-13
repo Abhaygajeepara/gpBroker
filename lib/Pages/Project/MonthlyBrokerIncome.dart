@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 class MonthlyBrokerIncome extends StatefulWidget {
   IncomeModel brokerSaleDetails;
-  MonthlyBrokerIncome({@required this.brokerSaleDetails});
+  MonthlyBrokerIncome({/*required*/ required this.brokerSaleDetails});
   @override
   _MonthlyBrokerIncomeState createState() => _MonthlyBrokerIncomeState();
 }
@@ -35,12 +35,12 @@ class _MonthlyBrokerIncomeState extends State<MonthlyBrokerIncome> {
      totalCommission = 0;
      remainingCommission =0;
     for(int i=0;i<widget.brokerSaleDetails.clientData.length;i++){
-      totalCommission =totalCommission + widget.brokerSaleDetails.clientData[i]['Commission'];
+      totalCommission =totalCommission + widget.brokerSaleDetails.clientData[i]['Commission'] as int;
       print(totalCommission);
       if( widget.brokerSaleDetails.clientData[i]['IsPay']){
-        receivedCommission =  receivedCommission+ widget.brokerSaleDetails.clientData[i]['Commission'];
+        receivedCommission =  receivedCommission+ widget.brokerSaleDetails.clientData[i]['Commission'] as int;
       }else{
-        remainingCommission = remainingCommission+widget.brokerSaleDetails.clientData[i]['Commission'];
+        remainingCommission = remainingCommission+widget.brokerSaleDetails.clientData[i]['Commission'] as int;
       }
 
     }
@@ -198,7 +198,7 @@ class _MonthlyBrokerIncomeState extends State<MonthlyBrokerIncome> {
                     children: [
                       IconButton(
                         onPressed: (){
-                          return launch("tel:${widget.brokerSaleDetails.clientData[index]['CustomerId']}");
+                           launch("tel:${widget.brokerSaleDetails.clientData[index]['CustomerId']}");
                         },
                         icon: Icon(Icons.phone),
                       ),

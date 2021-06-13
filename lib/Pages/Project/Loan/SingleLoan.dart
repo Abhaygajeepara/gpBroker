@@ -43,7 +43,7 @@ class _LoanInfoState extends State<LoanInfo> {
   List<SinglePropertiesLoanInfo> paidEmiData =[];
   List<SinglePropertiesLoanInfo> remainingEmiData =[];
 
-  String pdfPath ;
+  late String pdfPath ;
   bool loading = false;
   @override
   Widget build(BuildContext context) {
@@ -103,8 +103,8 @@ class _LoanInfoState extends State<LoanInfo> {
               if(snapshot.hasData)
               {
                 //  projectRetrieve.setPartOfSociety(snapshot.data.bookingData.part,snapshot.data.bookingData.propertiesNumber);
-                calculation(snapshot.data.loanData,snapshot.data.bookingData);
-                return !emiPage? propertiesInfo(snapshot.data):emiType(snapshot.data);
+                calculation(snapshot.data!.loanData,snapshot.data!.bookingData);
+                return !emiPage? propertiesInfo(snapshot.data!):emiType(snapshot.data!);
 
               }
               else if(snapshot.hasError) {
@@ -129,8 +129,10 @@ class _LoanInfoState extends State<LoanInfo> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton:  RaisedButton(
-        shape: StadiumBorder(),
+      floatingActionButton:  ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: StadiumBorder(),
+        ),
         onPressed: (){
           setState(() {
             emiPage = !emiPage;
@@ -397,7 +399,7 @@ class _LoanInfoState extends State<LoanInfo> {
               child: ListTile(
                 onTap: (){
 
-                  return  snapshot[emiIndex].emiPending?toaster(AppLocalizations.of(context).translate('RemainingEMI')):
+                    snapshot[emiIndex].emiPending?toaster(AppLocalizations.of(context).translate('RemainingEMI')):
                   Navigator.push(context, PageRouteBuilder(
                     pageBuilder: (_, __, ___) =>PaidEmiDetails(singlePropertiesLoanInfo:  snapshot[emiIndex],),
                     transitionDuration: Duration(seconds: 0),

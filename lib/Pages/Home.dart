@@ -30,17 +30,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Future<SharedPreferences> preferences = SharedPreferences.getInstance();
-  String brokerID;
-  String token ;
+  String? brokerID;
+   String? token ;
   bool loading = true;
-  List<IncomeModel> _data;
+  List<IncomeModel>? _data;
   int receivedCommission = 0;
   int totalCommission = 0;
   int remainingCommission =0;
-  String currentMonth;
-  BrokerModel profileData;
+  String? currentMonth;
+  late BrokerModel profileData;
   DateTime now = DateTime.now();
   @override
   void initState() {
@@ -48,25 +48,44 @@ class _HomeState extends State<Home> {
     super.initState();
     prfs();
      currentMonth  ="${now.month}-${now.year}";
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        final notification = message['notification'];
-
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-
-        final notification = message['data'];
-
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      },
+    notification();
+    // _firebaseMessaging.configure(
+    //   onMessage: (Map<String, dynamic> message) async {
+    //     print("onMessage: $message");
+    //     final notification = message['notification'];
+    //
+    //   },
+    //   onLaunch: (Map<String, dynamic> message) async {
+    //     print("onLaunch: $message");
+    //
+    //     final notification = message['data'];
+    //
+    //   },
+    //   onResume: (Map<String, dynamic> message) async {
+    //     print("onResume: $message");
+    //   },
+    // );
+    // _firebaseMessaging.requestNotificationPermissions(
+    //     const IosNotificationSettings(sound: true, badge: true, alert: true));
+  }
+  Future notification()async{
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
     );
-    _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true));
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+      // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      // TODO: handle the received notifications
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+  Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print("Handling a background message: ${message.messageId}");
   }
   Future prfs()async {
   token =await _firebaseMessaging.getToken();
@@ -106,7 +125,7 @@ class _HomeState extends State<Home> {
 
               IconButton(icon: Icon(Icons.account_balance_wallet), onPressed: ()async{
                 projectRetrieve.setRecordLimit(10);
-                return    Navigator.push(
+                    Navigator.push(
                     context,
                     PageRouteBuilder(
                     pageBuilder: (_, __, ___) => BrokerWallet (),
@@ -115,7 +134,7 @@ class _HomeState extends State<Home> {
               }
               ),
               IconButton(icon: Icon(Icons.person), onPressed: (){
-                return    AwesomeDialog(
+                    AwesomeDialog(
                   context: context,
 
                   dialogType: DialogType.INFO,
@@ -135,7 +154,7 @@ class _HomeState extends State<Home> {
                       ),
                       SizedBox(height: spaceVertical,),
                       Text(
-                        profileData.name,
+                        profileData.name!,
                         style: TextStyle(
                             fontSize: fontSize
                         ),
@@ -175,7 +194,7 @@ class _HomeState extends State<Home> {
           stream: projectRetrieve.BROKERDATAANDADVERTISE(),
           builder:(context,snapshot){
             if(snapshot.hasData){
-            profileData  = snapshot.data.brokerModel;
+            profileData  = snapshot.data!.brokerModel;
 
            //   findCurrentMonth(snapshot.data.commission,currentMonth);
               return Column(
@@ -197,13 +216,13 @@ class _HomeState extends State<Home> {
 
                         scrollDirection: Axis.horizontal,
                       ),
-                      itemCount: snapshot.data.advertiseList.length,
-                      itemBuilder: (BuildContext context,index){
-                        return snapshot.data.advertiseList.length <=0?
+                      itemCount: snapshot.data!.advertiseList.length,
+                      itemBuilder: (ctx, index, realIdx){
+                        return snapshot.data!.advertiseList.length <=0?
                          Image.asset('assets/default.jpg')
                         :GestureDetector(
                           onTap: () {
-                            projectRetrieve.setAds(snapshot.data.advertiseList[index].id);
+                            projectRetrieve.setAds(snapshot.data!.advertiseList[index].id);
                             Navigator.push(context, PageRouteBuilder(
                               //    pageBuilder: (_,__,____) => BuildingStructure(),
                               pageBuilder: (_, __, ___) => SingleAds(
@@ -225,7 +244,7 @@ class _HomeState extends State<Home> {
                             children: [
                               Expanded(
                                 child: CachedNetworkImage(
-                                  imageUrl:  snapshot.data.advertiseList[index]
+                                  imageUrl:  snapshot.data!.advertiseList[index]
                                       .imageUrl.first,
                                   placeholder: (context, url) => Center(child: CircularLoading(),),
                                   errorWidget: (context, url, error) => Icon(Icons.error),
@@ -242,8 +261,8 @@ class _HomeState extends State<Home> {
                                 // ),
                               ),
                               AutoSizeText(
-                                snapshot.data.advertiseList[index]
-                                    .description,
+                                snapshot.data!.advertiseList[index]
+                                    .description!,
                                 maxLines: 1,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -269,7 +288,7 @@ class _HomeState extends State<Home> {
                       ),
                       SizedBox(height: spaceVertical,),
                       Text(
-                        snapshot.data.brokerModel.totalRemainingEmi.toString(),
+                        snapshot.data!.brokerModel.totalRemainingEmi.toString(),
                         style: TextStyle(
                             fontSize: size.height*0.025,
 
@@ -278,7 +297,7 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                   Expanded(child: GridView.builder(
-                      itemCount: snapshot.data.brokerModel.remainingEmi.length,
+                      itemCount: snapshot.data!.brokerModel.remainingEmi.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: MediaQuery.of(context).size.width /
@@ -297,12 +316,12 @@ class _HomeState extends State<Home> {
                             child: SingleChildScrollView(
                               child: ListTile(
                                 onTap: ()async{
-                                  int spalsh  =  snapshot.data.brokerModel.remainingEmi[index].projectName.indexOf("/");
+                                  int spalsh  =  snapshot.data!.brokerModel.remainingEmi[index].projectName!.indexOf("/");
 
-                                  String _project =snapshot.data.brokerModel.remainingEmi[index].projectName.substring(0,spalsh);
+                                  String _project =snapshot.data!.brokerModel.remainingEmi[index].projectName!.substring(0,spalsh);
 
                                   await projectRetrieve.setProjectName(_project,);
-                                  await projectRetrieve.setPropertiesLoanRef(snapshot.data.brokerModel.remainingEmi[index].loanRef);
+                                  await projectRetrieve.setPropertiesLoanRef(snapshot.data!.brokerModel.remainingEmi[index].loanRef);
                                  //  await _projectRetrieve.setPartOfSociety(widget.customerProperties[index]['Part'],widget.customerProperties[index]['PropertyNumber']);
 
                                   Navigator.push(context, PageRouteBuilder(
@@ -310,13 +329,13 @@ class _HomeState extends State<Home> {
                                     transitionDuration: Duration(milliseconds: 0),
                                   ));
                                 },
-                                title: Text(snapshot.data.brokerModel.remainingEmi[index].projectName),
+                                title: Text(snapshot.data!.brokerModel.remainingEmi[index].projectName!),
                                 subtitle: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(snapshot.data.brokerModel.remainingEmi[index].loanRef),
-                                    Text(snapshot.data.brokerModel.remainingEmi[index].pendingEmi.toString()),
+                                    Text(snapshot.data!.brokerModel.remainingEmi[index].loanRef!),
+                                    Text(snapshot.data!.brokerModel.remainingEmi[index].pendingEmi.toString()),
                                   ],
                                 ),
                               ),
