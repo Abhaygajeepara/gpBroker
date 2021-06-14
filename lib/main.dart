@@ -278,7 +278,7 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Image.asset('assets/vrajraj.png'),
                 SizedBox(height: 80,),
-                Text('Broker Service Is Block For Some Time',
+                Text('Broker Service Is Currently Stop',
                   style: TextStyle(
                       color: CommonAssets.errorColor,
                       fontSize:23
