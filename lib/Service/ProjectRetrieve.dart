@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gpgroup/Model/Advertise/AdvertiseMode.dart';
@@ -10,8 +11,9 @@ import 'package:gpgroup/Model/Project/ProjectDetails.dart';
 import 'package:gpgroup/Model/Users/BrokerData.dart';
 import 'package:gpgroup/Model/Users/CustomerModel.dart';
 import 'package:gpgroup/Model/Wallet/BrokerWallet.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 class ProjectRetrieve{
   String? brokerId;
   String? customer;
@@ -190,5 +192,40 @@ class ProjectRetrieve{
   }
   Stream<AdvertiseModel> get SINGLEADVERTISE{
     return adsReference.doc(adsId).snapshots().map(_advertiseSingle);
+  }
+  Future  storeFile()async{
+    String filepath = (await getExternalStorageDirectory())!.path;
+
+    print(filepath);
+    String mainfolder = "";
+    String statementFolder ="" ;
+    List<String> listFolders = filepath.split("/");
+    for (int i = 1; i < listFolders.length; i++) {
+      String s = listFolders[i];
+      if (s != "Android") {
+        mainfolder = mainfolder + "/" + s;
+        statementFolder = statementFolder + "/" + s;
+      }
+      else {
+        break;
+      }
+    }
+    mainfolder = mainfolder + "/" + "Vrajraj";
+    statementFolder = statementFolder + "/" + "Vrajraj"+"/"+"Statement";
+
+
+
+
+    Directory _mainFolder = Directory(mainfolder);
+    Directory _statementFolder = Directory(statementFolder);
+    print(_mainFolder);
+    print(_statementFolder);
+    if(!await _mainFolder.exists()){
+      _mainFolder.create(recursive: true);
+    }
+    if(!await _statementFolder.exists()){
+      _statementFolder.create(recursive: true);
+    }
+    return mainfolder;
   }
 }

@@ -78,6 +78,9 @@ class _MyAppState extends State<MyApp> {
     send.send([id, status, progress]);
   }
   waitting()async{
+    // create a folder
+   await ProjectRetrieve().storeFile();
+
     preferences = await SharedPreferences.getInstance();
     await preferences.setString('Version',"1.0.0");
     preferences.containsKey('Language')? preferences.getString('Language'):await preferences.setString('Language', "en_US");
@@ -294,32 +297,17 @@ class _MyAppState extends State<MyApp> {
    appDownload(AppVersion appVersion) async{
      final storageRequest = await Permission.storage.request();
      if(storageRequest.isGranted){
-       Directory? directory = await (getExternalStorageDirectory() as FutureOr<Directory?>);
-       final path= Directory("storage/emulated/0/Download/GPGroup");
-       print(directory?.path);
-       if ((await path.exists())){
 
-         print("exist");
-       }else{
+       final path= await ProjectRetrieve().storeFile();
+       Directory directory = Directory(path);
 
-         print("not exist");
-     await    path.create();
-         // final taskId = await FlutterDownloader.enqueue(
-         //   fileName: 'Broker-${appVersion.version}',
-         //
-         //   url: appVersion.download,
-         //   savedDir: path.path,
-         //   showNotification: true, // show download progress in status bar (for Android)
-         //   openFileFromNotification: true, // click on notification to open downloaded file (for Android)
-         // );
-       }
-
-        await FlutterDownloader.enqueue(
+      final  s =  await FlutterDownloader.enqueue(
          url: appVersion.download,
-         savedDir: path.path,
+         savedDir: directory.path,
          showNotification: true, // show download progress in status bar (for Android)
          openFileFromNotification: true, // click on notification to open downloaded file (for Android)
        );
+
      }else{
        openAppSettings();
      }
